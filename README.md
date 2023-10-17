@@ -8,8 +8,14 @@ La aplicación cuenta con un login con correo y contraseña, registro con correo
 
 ## Screenshots
 
-<img src="./assets/login.png" width="150" height="300" />
-<img src="./assets/home.png" width="150" height="300" />
-<img src="./assets/user.png" width="150" height="300" />
-<img src="./assets/inof_about.png" width="150" height="300" />
-<img src="./assets/info_stats.png" width="150" height="300" />
+<table>
+  <tr>
+    <td valign="top"><img src="./assets/login.png" width="150" height="300" /></td>
+    <td valign="top"><img src="./assets/home.png" width="150" height="300" /></td>
+    <td><img src="./assets/user.png" width="150" height="300" /></td>
+  </tr>
+  <tr>
+    <td><img src="./assets/inof_about.png" width="150" height="300" /></td>
+    <td><img src="./assets/info_stats.png" width="150" height="300" /></td>
+  </tr>
+</table>
