@@ -1,15 +1,13 @@
+import 'package:PokeFlutter/pokemon/models/pokemon_dto.dart';
+import 'package:PokeFlutter/pokemon/services/pokemon_firebase_repository.dart';
+import 'package:PokeFlutter/pokemon/structure/controllers/pokemon_controller.dart';
 import 'package:get/get.dart';
-import 'package:namer_app/pokemon/models/pokemon.dart';
-import 'package:namer_app/pokemon/services/pokemon_firebase_repository.dart';
-import 'package:namer_app/pokemon/structure/controllers/pokemon_controller.dart';
 
 class UserFavoritesController extends GetxController {
-  RxSet<Pokemon> favorites = <Pokemon>{}.obs;
+  RxList<PokemonDto> favorites = <PokemonDto>[].obs;
 
-  Future<void> changeFavorite({
-    required String email, 
-    required Pokemon poke
-  }) async {
+  Future<void> changeFavorite(
+      {required String email, required PokemonDto poke}) async {
     if (isFavorite(poke: poke)) {
       await _removeFavorite(email: email, poke: poke);
     } else {
@@ -17,43 +15,44 @@ class UserFavoritesController extends GetxController {
     }
   }
 
-  Future<void> _addFavorite({
-    required String email, 
-    required Pokemon poke
-  }) async {
+  Future<void> _addFavorite(
+      {required String email, required PokemonDto poke}) async {
     favorites.add(poke);
+    favorites.value = favorites.value.toSet().toList();
     await PokemonFireBaseRepository().setFavorites(
-      email: email,
-      favorites: _pokemonsToIds(pokemons: favorites.value.toList())
-    );
+        email: email,
+        favorites: _pokemonsToIds(pokemons: favorites.value.toList()));
   }
 
-  Future<void> _removeFavorite({
-    required String email, 
-    required Pokemon poke
-  }) async {
+  Future<void> _removeFavorite(
+      {required String email, required PokemonDto poke}) async {
     favorites.removeWhere((element) => element.id == poke.id);
     await PokemonFireBaseRepository().setFavorites(
-      email: email,
-      favorites: _pokemonsToIds(pokemons: favorites.value.toList())
-    );
+        email: email,
+        favorites: _pokemonsToIds(pokemons: favorites.value.toList()));
   }
 
-  Future<void> refreshFavorites({
-    required String email,
-    required PokemonController pokemonController
-  }) async {
-    List<int> favoriteFirebase = await PokemonFireBaseRepository().getFavorites(email: email);
-    var pokemons = await Future.wait(favoriteFirebase.map((id) => pokemonController.getPokemon(id: id)));
-    favorites.value = pokemons.where((element) => element != null).map((e) => e!).toSet();
+  Future<void> refreshFavorites(
+      {required String email,
+      required PokemonController pokemonController}) async {
+    List<int> favoriteFirebase =
+        await PokemonFireBaseRepository().getFavorites(email: email);
+    var pokemons = await Future.wait(
+        favoriteFirebase.map((id) => pokemonController.getPokemon(id: id)));
+    favorites.value = pokemons
+        .where((element) => element != null)
+        .map((e) => e!)
+        .toSet()
+        .toList();
   }
 
-  bool isFavorite({required Pokemon poke}) {
-    var value = _pokemonsToIds(pokemons: favorites.value.toList()).contains(poke.id!);
+  bool isFavorite({required PokemonDto poke}) {
+    var value =
+        _pokemonsToIds(pokemons: favorites.value.toList()).contains(poke.id!);
     return value;
   }
 
-  List<int> _pokemonsToIds({required List<Pokemon> pokemons}) {
+  List<int> _pokemonsToIds({required List<PokemonDto> pokemons}) {
     return pokemons.map((e) => e.id ?? 0).toList();
   }
 }

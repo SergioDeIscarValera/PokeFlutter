@@ -1,7 +1,7 @@
+import 'package:PokeFlutter/auth/structure/controllers/auth_controller.dart';
+import 'package:PokeFlutter/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:namer_app/auth/structure/controllers/auth_controller.dart';
-import 'package:namer_app/routes/app_routes.dart';
 
 class MyAppBar extends StatelessWidget {
   const MyAppBar({
@@ -11,7 +11,7 @@ class MyAppBar extends StatelessWidget {
     required this.leftFuntion,
     required this.textTap,
   });
-  
+
   final IconData leftIcon;
   final Function leftFuntion;
   final AuthController authController;
@@ -22,7 +22,7 @@ class MyAppBar extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)) ,
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -30,7 +30,7 @@ class MyAppBar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             IconButton(
-              onPressed: (){
+              onPressed: () {
                 authController.signOut(
                   onSingOut: () => Get.offAllNamed(Routes.LOGIN),
                 );
@@ -38,7 +38,7 @@ class MyAppBar extends StatelessWidget {
               icon: const Icon(Icons.logout),
             ),
             GestureDetector(
-              onTap: (){
+              onTap: () {
                 textTap.call();
               },
               child: Column(
@@ -61,7 +61,7 @@ class MyAppBar extends StatelessWidget {
               ),
             ),
             IconButton(
-              onPressed: (){
+              onPressed: () {
                 //Get.toNamed(Routes.POKEMON_FAVORITES);
                 leftFuntion.call();
               },

@@ -1,4 +1,4 @@
-class PokemonTypeToColor{
+class PokemonTypeToColor {
   static final Map<String, int> _typeToColor = {
     "normal": 0xFFA8A878,
     "fire": 0xFFF08030,
@@ -20,7 +20,10 @@ class PokemonTypeToColor{
     "fairy": 0xFFEE99AC,
   };
 
-  static int? getColor(String type){
+  static int? getColor(String type) {
+    if (type.isEmpty || type == "null") {
+      return null;
+    }
     var formattedType = type.toLowerCase().replaceRange(0, 12, "");
     var color = _typeToColor[formattedType];
     return color;
