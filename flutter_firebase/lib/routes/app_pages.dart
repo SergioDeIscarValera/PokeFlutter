@@ -5,6 +5,7 @@ import 'package:PokeFlutter/pokemon/pages/pokemon_home.dart';
 import 'package:PokeFlutter/pokemon/pages/pokemon_info.dart';
 import 'package:PokeFlutter/pokemon/structure/bindings/pokemon_binding.dart';
 import 'package:PokeFlutter/pokemon/structure/bindings/pokemon_info_binding.dart';
+import 'package:PokeFlutter/pokemon/structure/bindings/search_filter_binding.dart';
 import 'package:PokeFlutter/pokemon/structure/bindings/user_favorites_binding.dart';
 import 'package:get/get.dart';
 
@@ -24,7 +25,7 @@ class AppPages {
       name: Routes.POKEMON_HOME,
       page: () => PokemonHome(),
       binding: PokemonBinding(),
-      bindings: [UserFavoritesBinding()],
+      bindings: [UserFavoritesBinding(), SearchFilterBinding()],
     ),
     GetPage(
       name: Routes.POKEMON_FAVORITES,

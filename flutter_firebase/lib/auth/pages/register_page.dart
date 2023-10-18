@@ -133,9 +133,7 @@ class RegisterPage extends StatelessWidget {
                         SquareTile(
                           imagePath: "lib/assets/google.png",
                           onTap: () {
-                            authController.loginWithGoogle(onSuccess: () {
-                              Get.toNamed(Routes.POKEMON_HOME);
-                            });
+                            authController.loginWithGoogle();
                           },
                         ),
                       ],

@@ -22,6 +22,7 @@ dependencies:
   http: ^1.1.0
   cloud_firestore: ^4.9.3
   fl_chart: ^0.64.0
+  path_provider: ^2.1.1
 
 dev_dependencies:
   flutter_test:

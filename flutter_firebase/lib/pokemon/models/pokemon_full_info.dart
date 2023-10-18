@@ -31,8 +31,8 @@ class PokemonFullInfo {
       "hp": json["stats"][0]["base_stat"],
       "att": json["stats"][1]["base_stat"],
       "def": json["stats"][2]["base_stat"],
-      "spe-att": json["stats"][3]["base_stat"],
-      "spe-def": json["stats"][4]["base_stat"],
+      "s-att": json["stats"][3]["base_stat"],
+      "s-def": json["stats"][4]["base_stat"],
       "spe": json["stats"][5]["base_stat"],
     };
     var types = json["types"] as List;

@@ -67,15 +67,16 @@ class PokemonCard extends StatelessWidget {
             ),
           ),
           Positioned(
-            left: 142,
+            right: 3,
             top: 3,
             child: Obx(() {
-              var email = _authController.firebaseUser.value?.email;
+              var email = _authController.firebaseUser?.email;
               var isFavorite =
                   _userFavoritesController.isFavorite(poke: pokemon);
 
               Function onPressed;
-              if (_authController.firebaseUser.value == null) {
+              if (_authController.firebaseUser == null ||
+                  _authController.firebaseUser?.isAnonymous == true) {
                 onPressed = () => Get.snackbar(
                     "Error", "You must be logged in to add favorites");
               } else {

@@ -1,37 +1,45 @@
 import 'package:PokeFlutter/pokemon/models/pokemon_dto.dart';
-import 'package:PokeFlutter/pokemon/models/pokemon_full_info.dart';
+import 'package:PokeFlutter/pokemon/models/pokemon_filter_class.dart';
 import 'package:PokeFlutter/pokemon/services/pokemon_repository.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 class PokemonController extends GetxController {
   RxList<PokemonDto> pokemonList = <PokemonDto>[].obs;
-  Rx<PokemonFullInfo> pokemonSelected = PokemonFullInfo().obs;
 
   TextEditingController searchController = TextEditingController();
 
   int pagination = 10;
   int _offset = 0;
 
+  @override
+  void onReady() {
+    PokemonRepository().startGetAllPokemon(onLoad: () {
+      getPokemonList(limit: pagination, offset: _offset);
+    }); // Para que se muestre el loading
+    super.onReady();
+  }
+
   Future<PokemonDto?> getPokemon({required int id}) async =>
       await PokemonRepository().getPokemon(name: id.toString());
 
-  Future<void> getPokemonList({required int limit, required int offset}) async {
+  void getPokemonList({required int limit, required int offset}) {
     pokemonList.value = []; // Para que se muestre el loading
-    pokemonList.value =
-        await PokemonRepository().getPokemonList(limit: limit, offset: offset);
+    pokemonList.value = PokemonRepository()
+        .getPokemonListFromCache(limit: limit, offset: offset);
   }
 
-  Future<void> getNextPokemonList() async {
+  void getNextPokemonList() {
     if (_offset > 1118) return;
     _offset += pagination;
-    await getPokemonList(limit: pagination, offset: _offset);
+    getPokemonList(limit: pagination, offset: _offset);
   }
 
-  Future<void> getPreviousPokemonList() async {
+  void getPreviousPokemonList() {
     if (_offset < pagination) return;
     _offset -= pagination;
-    await getPokemonList(limit: pagination, offset: _offset);
+    getPokemonList(limit: pagination, offset: _offset);
   }
 
   Future<void> searchPokemonByName(
@@ -53,21 +61,29 @@ class PokemonController extends GetxController {
     }
   }
 
-  Future<void> resetPokemonList() async {
+  void resetPokemonList() {
     _offset = 0;
-    await getPokemonList(limit: pagination, offset: _offset);
+    getPokemonList(limit: pagination, offset: _offset);
   }
 
   void setPaginarion(int pagination) {
     this.pagination = pagination;
   }
 
-  Future<void> getFullPokemonById({required int id}) async {
-    pokemonSelected.value =
-        await PokemonRepository().getFullPokemonById(id: id);
-  }
+  Future<void> filterAllPokemons({required PokemonFilter filter}) async {
+    var value = PokemonRepository()
+        .getAllPokemons()
+        .where((pokemon) =>
+            pokemon.name!.toLowerCase().contains(filter.textFild.toLowerCase()))
+        .toList();
 
-  void unselectPokemon() {
-    pokemonSelected.value = PokemonFullInfo();
+    if (value.isEmpty) {
+      Get.snackbar(
+        "Error",
+        "No se encontraron pokemones con ese nombre",
+        backgroundColor: Colors.red.withOpacity(0.4),
+      );
+    }
+    pokemonList.value = value.sublist(0, value.length > 10 ? 10 : value.length);
   }
 }

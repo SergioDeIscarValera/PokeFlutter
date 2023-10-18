@@ -94,10 +94,7 @@ class LoginPage extends StatelessWidget {
                       text: "Login",
                       onTap: () {
                         if (_formKey.currentState!.validate()) {
-                          authController.loginWithEmailAndPassword(
-                              onSuccess: () {
-                            Get.toNamed(Routes.POKEMON_HOME);
-                          });
+                          authController.loginWithEmailAndPassword();
                         }
                       },
                     ),
@@ -137,9 +134,7 @@ class LoginPage extends StatelessWidget {
                         SquareTile(
                           imagePath: "lib/assets/google.png",
                           onTap: () {
-                            authController.loginWithGoogle(onSuccess: () {
-                              Get.toNamed(Routes.POKEMON_HOME);
-                            });
+                            authController.loginWithGoogle();
                           },
                         ),
                       ],

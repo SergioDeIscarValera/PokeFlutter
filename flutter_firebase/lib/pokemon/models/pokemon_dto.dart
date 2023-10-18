@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:PokeFlutter/pokemon/models/type_pokemon.dart';
 
 class PokemonDto {
@@ -19,6 +21,23 @@ class PokemonDto {
     if (types.length > 1) {
       subType = TypePokemon.values.firstWhere((element) =>
           element.toString() == "TypePokemon.${types[1]["type"]["name"]}");
+    }
+  }
+
+  String toCsvRow() {
+    return "$name,$id,$image,${type.toString().split(".")[1]},${subType == null ? "null" : subType.toString().split(".")[1]}";
+  }
+
+  PokemonDto.fromCsvRow(String e) {
+    var values = e.split(",");
+    name = values.elementAt(0);
+    id = int.parse(values.elementAt(1));
+    image = values.elementAt(2);
+    type = TypePokemon.values.firstWhere((element) =>
+        element.toString() == "TypePokemon.${values.elementAt(3)}");
+    if (values.elementAt(4) != "null") {
+      subType = TypePokemon.values.firstWhere((element) =>
+          element.toString() == "TypePokemon.${values.elementAt(4)}");
     }
   }
 }

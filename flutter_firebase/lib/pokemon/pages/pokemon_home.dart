@@ -1,8 +1,10 @@
 import 'package:PokeFlutter/auth/structure/controllers/auth_controller.dart';
 import 'package:PokeFlutter/pokemon/structure/controllers/pokemon_controller.dart';
+import 'package:PokeFlutter/pokemon/structure/controllers/search_filter_controller.dart';
 import 'package:PokeFlutter/pokemon/structure/controllers/user_favorites_controller.dart';
 import 'package:PokeFlutter/pokemon/widgets/grid_of_pokemons.dart';
 import 'package:PokeFlutter/pokemon/widgets/my_app_bar.dart';
+import 'package:PokeFlutter/pokemon/widgets/pokemon_search_bar.dart';
 import 'package:PokeFlutter/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -18,9 +20,12 @@ class PokemonHome extends StatelessWidget {
   Widget build(BuildContext context) {
     PokemonController pokemonController = Get.find();
     pokemonController.setPaginarion(pagination);
+
     AuthController authController = Get.find();
     UserFavoritesController userFavoritesController = Get.find();
-    var userEmail = authController.firebaseUser.value?.email ?? "Anonymous";
+    SearchFilterController searchFilterController = Get.find();
+
+    var userEmail = authController.firebaseUser?.email ?? "Anonymous";
     if (pokemonController.pokemonList.isEmpty) {
       pokemonController.getPokemonList(offset: 0, limit: pagination);
     }
@@ -38,60 +43,20 @@ class PokemonHome extends StatelessWidget {
                 children: [
                   Container(
                     height: 90,
+                    width: double.infinity,
                     decoration: BoxDecoration(
-                      color: Colors.grey[700],
+                      color: Colors.grey[600],
                       borderRadius: const BorderRadius.vertical(
                           bottom: Radius.circular(16)),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 45),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Expanded(
-                                child: TextField(
-                              controller: pokemonController.searchController,
-                              decoration: const InputDecoration(
-                                hintText: "Search",
-                                hintStyle: TextStyle(
-                                  color: Colors.white,
-                                ),
-                                prefixIcon: Icon(
-                                  Icons.edit,
-                                  color: Colors.white,
-                                ),
-                                border: InputBorder.none,
-                              ),
-                              style: const TextStyle(
-                                color: Colors.white,
-                              ),
-                            )),
-                            IconButton(
-                              onPressed: () {
-                                pokemonController.searchPokemonByName(
-                                    name:
-                                        pokemonController.searchController.text,
-                                    onFail: () {
-                                      Get.snackbar(
-                                        "Error",
-                                        "Pokemon not found",
-                                        backgroundColor: Colors.red,
-                                        colorText: Colors.white,
-                                      );
-                                    });
-                                _scrollController.jumpTo(
-                                    _scrollController.position.minScrollExtent);
-                              },
-                              icon: const Icon(Icons.search),
-                              color: Colors.white,
-                            ),
-                          ],
-                        ),
+                    child: const Padding(
+                      padding: EdgeInsets.only(top: 50),
+                      child: Center(
+                        child: MySearch(),
                       ),
                     ),
                   ),
+                  // AppBar
                   MyAppBar(
                     authController: authController,
                     leftIcon: Icons.person,
@@ -105,6 +70,7 @@ class PokemonHome extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 15),
+              // Grid Pokemons
               Expanded(
                 child: SingleChildScrollView(
                   controller: _scrollController,
@@ -118,31 +84,36 @@ class PokemonHome extends StatelessWidget {
                         crossAxisCount: 2,
                       ),
                       const SizedBox(height: 15),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              pokemonController.getPreviousPokemonList();
-                              _scrollController.jumpTo(
-                                  _scrollController.position.minScrollExtent);
-                            },
-                            icon: const Icon(Icons.arrow_back_ios),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              pokemonController.getNextPokemonList();
-                              _scrollController.jumpTo(
-                                  _scrollController.position.minScrollExtent);
-                            },
-                            icon: const Icon(Icons.arrow_forward_ios),
-                          ),
-                        ],
-                      ),
+                      Obx(() {
+                        if (!searchFilterController.isFiltering) {
+                          return Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    pokemonController.getPreviousPokemonList();
+                                    _scrollController.jumpTo(_scrollController
+                                        .position.minScrollExtent);
+                                  },
+                                  icon: const Icon(Icons.arrow_back_ios),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    pokemonController.getNextPokemonList();
+                                    _scrollController.jumpTo(_scrollController
+                                        .position.minScrollExtent);
+                                  },
+                                  icon: const Icon(Icons.arrow_forward_ios),
+                                ),
+                              ]);
+                        } else {
+                          return const SizedBox();
+                        }
+                      }),
                     ],
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),

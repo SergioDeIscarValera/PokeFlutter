@@ -1,4 +1,3 @@
-import 'package:PokeFlutter/pokemon/structure/controllers/pokemon_controller.dart';
 import 'package:PokeFlutter/pokemon/structure/controllers/pokemon_info_controller.dart';
 import 'package:PokeFlutter/pokemon/utils/pokemon_type_to_color.dart';
 import 'package:PokeFlutter/pokemon/widgets/pokemon_card_type.dart';
@@ -6,17 +5,17 @@ import 'package:PokeFlutter/pokemon/widgets/pokemon_stats_chart.dart';
 import 'package:PokeFlutter/utils/string_funtions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'dart:math' as math;
 
 class PokemonInfo extends StatelessWidget {
   const PokemonInfo({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    PokemonController pokemonController = Get.find();
     PokemonInfoController pokemonInfoController = Get.find();
 
     var id = Get.arguments["id"];
-    pokemonController.getFullPokemonById(id: id);
+    pokemonInfoController.getFullPokemonById(id: id);
     var height = MediaQuery.of(context).size.height;
 
     return Scaffold(
@@ -30,8 +29,8 @@ class PokemonInfo extends StatelessWidget {
               return Container(
                 height: height,
                 decoration: BoxDecoration(
-                  color: Color(PokemonTypeToColor.getColor(pokemonController
-                              .pokemonSelected.value.type
+                  color: Color(PokemonTypeToColor.getColor(pokemonInfoController
+                              .pokemonSelected.type
                               .toString()) ??
                           0xFFFFFFFF)
                       .withOpacity(0.6),
@@ -44,7 +43,7 @@ class PokemonInfo extends StatelessWidget {
                     children: [
                       Text(
                         StringFunctions.capitalize(
-                            pokemonController.pokemonSelected.value.name ??
+                            pokemonInfoController.pokemonSelected.name ??
                                 "no info"),
                         style: const TextStyle(
                           fontSize: 64,
@@ -64,11 +63,12 @@ class PokemonInfo extends StatelessWidget {
               child: IconButton(
                 onPressed: () {
                   Get.back();
-                  pokemonController.unselectPokemon();
+                  pokemonInfoController.unselectPokemon();
                 },
                 icon: const Icon(Icons.arrow_back),
               ),
             ),
+            // Botón shiny
             Positioned(
               top: 5,
               right: 5,
@@ -79,6 +79,7 @@ class PokemonInfo extends StatelessWidget {
                 icon: const Icon(Icons.autorenew),
               ),
             ),
+            // Contenido
             Positioned(
               child: Container(
                 height: height * 0.65,
@@ -101,31 +102,38 @@ class PokemonInfo extends StatelessWidget {
                         children: [
                           //Menu
                           PokemonInfoMenu(
-                            pokemonController: pokemonController,
                             pokemonInfoController: pokemonInfoController,
                           ),
                           //Contenido
                           const SizedBox(height: 20),
                           Obx(() {
-                            if (!pokemonInfoController.flagMenu.value) {
+                            if (!pokemonInfoController.flagMenu) {
                               // About
                               return PokemonInfoMenuAbout(
-                                pokemonController: pokemonController,
                                 pokemonInfoController: pokemonInfoController,
                               );
                             } else {
                               // Stats
-                              return SizedBox(
-                                width: double.infinity,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    PokemonStatsChart(
-                                      stats: pokemonController
-                                          .pokemonSelected.value.stats,
-                                    )
-                                  ],
+                              return Padding(
+                                padding: const EdgeInsets.only(top: 50),
+                                child: Transform.rotate(
+                                  angle: 90 * math.pi / 180,
+                                  child: SizedBox(
+                                    width: double.infinity,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        PokemonStatsChart(
+                                          stats: pokemonInfoController
+                                              .pokemonSelected.stats,
+                                          angle: -90,
+                                        )
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               );
                             }
@@ -139,7 +147,7 @@ class PokemonInfo extends StatelessWidget {
             ),
             // Imagen del pokemon
             Obx(() {
-              if (pokemonController.pokemonSelected.value.image == null) {
+              if (pokemonInfoController.pokemonSelected.image == null) {
                 return Positioned(
                   top: height * 0.3,
                   child: const CircularProgressIndicator(),
@@ -150,9 +158,9 @@ class PokemonInfo extends StatelessWidget {
                   child: IgnorePointer(
                     ignoring: true,
                     child: Image.network(
-                      pokemonInfoController.flagImage.value
-                          ? pokemonController.pokemonSelected.value.imageShiny!
-                          : pokemonController.pokemonSelected.value.image!,
+                      pokemonInfoController.flagImage
+                          ? pokemonInfoController.pokemonSelected.imageShiny!
+                          : pokemonInfoController.pokemonSelected.image!,
                       height: height * 0.3,
                       width: height * 0.3,
                       fit: BoxFit.contain,
@@ -171,11 +179,9 @@ class PokemonInfo extends StatelessWidget {
 class PokemonInfoMenuAbout extends StatelessWidget {
   const PokemonInfoMenuAbout({
     super.key,
-    required this.pokemonController,
     required this.pokemonInfoController,
   });
 
-  final PokemonController pokemonController;
   final PokemonInfoController pokemonInfoController;
 
   @override
@@ -188,7 +194,7 @@ class PokemonInfoMenuAbout extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Heigth:\t${pokemonController.pokemonSelected.value.height ?? "no info"} m",
+              "Heigth:\t${pokemonInfoController.pokemonSelected.height ?? "no info"} m",
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -196,7 +202,7 @@ class PokemonInfoMenuAbout extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             Text(
-              "Weight:\t${pokemonController.pokemonSelected.value.weight ?? "no info"} Kg",
+              "Weight:\t${pokemonInfoController.pokemonSelected.weight ?? "no info"} Kg",
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -206,11 +212,11 @@ class PokemonInfoMenuAbout extends StatelessWidget {
             Row(
               children: [
                 PokemonCardType(
-                  type: pokemonController.pokemonSelected.value.type,
+                  type: pokemonInfoController.pokemonSelected.type,
                   fontSize: 18,
                 ),
                 PokemonCardType(
-                  type: pokemonController.pokemonSelected.value.subType,
+                  type: pokemonInfoController.pokemonSelected.subType,
                   fontSize: 18,
                 ),
               ],
@@ -225,11 +231,8 @@ class PokemonInfoMenuAbout extends StatelessWidget {
 class PokemonInfoMenu extends StatelessWidget {
   const PokemonInfoMenu({
     Key? key,
-    required this.pokemonController,
     required this.pokemonInfoController,
   }) : super(key: key);
-
-  final PokemonController pokemonController;
   final PokemonInfoController pokemonInfoController;
   @override
   Widget build(BuildContext context) {
@@ -243,13 +246,13 @@ class PokemonInfoMenu extends StatelessWidget {
                 },
                 child: PokemonInfoMenuItem(
                   text: "About",
-                  borderColor: pokemonInfoController.flagMenu.value
+                  borderColor: pokemonInfoController.flagMenu
                       ? Colors.transparent
-                      : Color(PokemonTypeToColor.getColor(pokemonController
-                              .pokemonSelected.value.type
+                      : Color(PokemonTypeToColor.getColor(pokemonInfoController
+                              .pokemonSelected.type
                               .toString()) ??
                           0xFFFFFFFF),
-                  textColor: pokemonInfoController.flagMenu.value
+                  textColor: pokemonInfoController.flagMenu
                       ? Colors.grey
                       : Colors.black,
                 ),
@@ -264,13 +267,13 @@ class PokemonInfoMenu extends StatelessWidget {
                 },
                 child: PokemonInfoMenuItem(
                   text: "Stats",
-                  borderColor: pokemonInfoController.flagMenu.value
-                      ? Color(PokemonTypeToColor.getColor(pokemonController
-                              .pokemonSelected.value.type
+                  borderColor: pokemonInfoController.flagMenu
+                      ? Color(PokemonTypeToColor.getColor(pokemonInfoController
+                              .pokemonSelected.type
                               .toString()) ??
                           0xFFFFFFFF)
                       : Colors.transparent,
-                  textColor: pokemonInfoController.flagMenu.value
+                  textColor: pokemonInfoController.flagMenu
                       ? Colors.black
                       : Colors.grey,
                 ),

@@ -51,7 +51,7 @@ class MyAppBar extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    authController.firebaseUser.value?.email ?? "Anonymous",
+                    authController.firebaseUser?.email ?? "Anonymous",
                     style: TextStyle(
                       color: Colors.grey[600],
                       fontSize: 8,
