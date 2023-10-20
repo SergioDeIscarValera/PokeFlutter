@@ -203,7 +203,6 @@ class PokemonRepository {
 
   Future<void> _loadAllGenerationsNames() async {
     final String generationsNameFilePath = await _getGenerationsNameFilePath();
-    //await File(generationsNameFilePath).delete(); // BORRAR
     try {
       if (await File(generationsNameFilePath).exists()) {
         await _generationsReedFicheroCsv(generationsNameFilePath);

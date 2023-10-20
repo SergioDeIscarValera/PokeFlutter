@@ -17,5 +17,10 @@ La aplicación cuenta con un login con correo y contraseña, registro con correo
   <tr>
     <td><img src="./assets/inof_about.png" width="150" height="300" /></td>
     <td><img src="./assets/info_stats.png" width="150" height="300" /></td>
+    <td><img src="./assets/filter_1.png" width="150" height="300" /></td>
+  </tr>
+    <tr>
+    <td></td>
+    <td><img src="./assets/filter_2.png" width="150" height="300" /></td>
   </tr>
 </table>
