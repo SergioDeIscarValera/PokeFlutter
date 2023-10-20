@@ -1,4 +1,3 @@
-import 'package:PokeFlutter/pokemon/structure/controllers/pokemon_controller.dart';
 import 'package:PokeFlutter/pokemon/structure/controllers/search_filter_controller.dart';
 import 'package:PokeFlutter/pokemon/widgets/more_filters.dart';
 import 'package:flutter/material.dart';
@@ -10,17 +9,12 @@ class MySearch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SearchFilterController searchFilterController = Get.find();
-    PokemonController pokemonController = Get.find();
     return SearchAnchor(
       builder: (context, controller) {
         return SearchBar(
           controller: searchFilterController.searchController,
-          onChanged: (value) {
-            searchFilterController.applyFilters(value, pokemonController);
-          },
-          onSubmitted: (value) {
-            searchFilterController.applyFilters(value, pokemonController);
-          },
+          onChanged: (value) {},
+          onSubmitted: (value) {},
           textStyle: MaterialStateProperty.resolveWith(
             (_) => const TextStyle(
               color: Colors.white,
@@ -41,13 +35,9 @@ class MySearch extends StatelessWidget {
               message: "Clear search",
               child: IconButton(
                 onPressed: () {
-                  searchFilterController.clearFilters(pokemonController);
-                  searchFilterController.applyFilters("", pokemonController);
+                  searchFilterController.searchController.clear();
                 },
-                icon: const Icon(
-                  Icons.delete,
-                  color: Colors.white,
-                ),
+                icon: const Icon(Icons.cancel, color: Colors.white),
               ),
             ),
             Obx(() {

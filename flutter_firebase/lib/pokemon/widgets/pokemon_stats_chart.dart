@@ -1,11 +1,13 @@
+import 'package:PokeFlutter/pokemon/models/pokemon_stats.dart';
+import 'package:PokeFlutter/pokemon/models/pokemon_type.dart';
 import 'package:PokeFlutter/pokemon/utils/pokemon_stat_to_color.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
 class PokemonStatsChart extends StatelessWidget {
-  static int count = 0;
-  final Map<String, int>? stats;
+  static int count = 0; // NO INCREMENTA VALUE EN getAxiTitles
+  final Map<PokemonStats, int>? stats;
   final double angle;
   final Offset offsetBottom;
   final Offset offsetTop;
@@ -23,7 +25,7 @@ class PokemonStatsChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<BarChartGroupData> chartData = stats?.entries.map((entry) {
-          final String statName = entry.key;
+          final PokemonStats statName = entry.key;
           final int statValue = entry.value;
 
           return BarChartGroupData(
@@ -32,8 +34,7 @@ class PokemonStatsChart extends StatelessWidget {
               BarChartRodData(
                 toY: statValue.toDouble(),
                 width: 20,
-                color:
-                    Color(PokemonStatsToColor.getColor(statName) ?? 0xFF000000),
+                color: PokemonStatsToColor.getColor(statName, Colors.white),
                 borderRadius: BorderRadius.circular(4),
                 backDrawRodData: BackgroundBarChartRodData(
                   show: true,
@@ -56,9 +57,9 @@ class PokemonStatsChart extends StatelessWidget {
                 sideTitles: SideTitles(
               showTitles: true,
               getTitlesWidget: (value, meta) => getAxiTitles(
-                value,
-                meta,
-                stats?.values.map((e) => e.toString()).toList() ?? [],
+                value: value,
+                titles: stats?.values.map((e) => e.toString()).toList() ?? [],
+                meta: meta,
                 angle: angle,
                 offset: offsetTop,
               ),
@@ -71,9 +72,11 @@ class PokemonStatsChart extends StatelessWidget {
               sideTitles: SideTitles(
                 showTitles: true,
                 getTitlesWidget: (value, meta) => getAxiTitles(
-                  value,
-                  meta,
-                  stats?.keys.toList() ?? [],
+                  value: value,
+                  titles: PokemonStats.values
+                      .map((e) => PokemonStatsNamed(e).name)
+                      .toList(),
+                  meta: meta,
                   angle: angle,
                   offset: offsetBottom,
                 ),
@@ -91,12 +94,16 @@ class PokemonStatsChart extends StatelessWidget {
   }
 }
 
-Widget getAxiTitles(double value, TitleMeta meta, List<String> titles,
-    {double fontSize = 14, double angle = 0, offset = Offset.zero}) {
+Widget getAxiTitles(
+    {required double value,
+    required List<String> titles,
+    required TitleMeta meta,
+    double fontSize = 14,
+    double angle = 0,
+    offset = Offset.zero}) {
   final style = TextStyle(
-    color: Color(
-        PokemonStatsToColor.getColor(titles[PokemonStatsChart.count++]) ??
-            0xFF000000),
+    color: PokemonStatsToColor.getColor(
+        PokemonStats.values[PokemonStatsChart.count++], Colors.black),
     fontWeight: FontWeight.bold,
     fontSize: fontSize,
   );
@@ -108,8 +115,7 @@ Widget getAxiTitles(double value, TitleMeta meta, List<String> titles,
     child: Transform.rotate(
       angle: angle * math.pi / 180,
       child: Text(
-        //titles[value.toInt()], // NO INCREMENTA VALUE
-        titles[PokemonStatsChart.count++],
+        titles[PokemonStatsChart.count++], // NO INCREMENTA VALUE
         style: style,
       ),
     ),

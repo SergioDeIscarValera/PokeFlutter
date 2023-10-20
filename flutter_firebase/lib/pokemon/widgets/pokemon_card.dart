@@ -13,8 +13,7 @@ class PokemonCard extends StatelessWidget {
     Key? key,
     required this.pokemon,
   }) : super(key: key) {
-    _cardColor = Color(
-        PokemonTypeToColor.getColor(pokemon.type.toString()) ?? 0xFFFFFFFF);
+    _cardColor = PokemonTypeToColor.getColor(pokemon.type, Colors.white);
   }
   final AuthController _authController = Get.find();
   final UserFavoritesController _userFavoritesController = Get.find();
@@ -64,6 +63,28 @@ class PokemonCard extends StatelessWidget {
               height: 90,
               width: 90,
               fit: BoxFit.contain,
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return const SizedBox(
+                  width: 90,
+                  height: 90,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              },
+              errorBuilder: (context, error, stackTrace) {
+                return const SizedBox(
+                  width: 90,
+                  height: 90,
+                  child: Center(
+                    child: Icon(
+                      Icons.error,
+                      weight: 45,
+                    ),
+                  ),
+                );
+              },
             ),
           ),
           Positioned(

@@ -1,10 +1,10 @@
-import 'package:PokeFlutter/pokemon/models/type_pokemon.dart';
+import 'package:PokeFlutter/pokemon/models/pokemon_type.dart';
 import 'package:PokeFlutter/pokemon/utils/pokemon_type_to_color.dart';
 import 'package:PokeFlutter/utils/string_funtions.dart';
 import 'package:flutter/material.dart';
 
 class PokemonCardType extends StatelessWidget {
-  final TypePokemon? type;
+  final PokemonType? type;
   const PokemonCardType({Key? key, required this.type, this.fontSize = 12})
       : super(key: key);
 
@@ -18,8 +18,7 @@ class PokemonCardType extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          color:
-              Color(PokemonTypeToColor.getColor(type.toString()) ?? 0xFFFFFFFF),
+          color: PokemonTypeToColor.getColor(type, Colors.white),
           border: Border.all(color: Colors.white, width: 2)),
       child: Text(
         StringFunctions.capitalize(type.toString().replaceRange(0, 12, "")),

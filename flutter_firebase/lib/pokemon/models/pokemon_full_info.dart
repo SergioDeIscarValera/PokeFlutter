@@ -1,4 +1,5 @@
-import 'package:PokeFlutter/pokemon/models/type_pokemon.dart';
+import 'package:PokeFlutter/pokemon/models/pokemon_stats.dart';
+import 'package:PokeFlutter/pokemon/models/pokemon_type.dart';
 
 class PokemonFullInfo {
   PokemonFullInfo(
@@ -16,9 +17,9 @@ class PokemonFullInfo {
   String? name;
   String? image;
   String? imageShiny;
-  Map<String, int>? stats;
-  TypePokemon? type;
-  TypePokemon? subType;
+  Map<PokemonStats, int>? stats;
+  PokemonType? type;
+  PokemonType? subType;
   int? height;
   int? weight;
 
@@ -28,19 +29,19 @@ class PokemonFullInfo {
     image = json["sprites"]["front_default"];
     imageShiny = json["sprites"]["front_shiny"];
     stats = {
-      "hp": json["stats"][0]["base_stat"],
-      "att": json["stats"][1]["base_stat"],
-      "def": json["stats"][2]["base_stat"],
-      "s-att": json["stats"][3]["base_stat"],
-      "s-def": json["stats"][4]["base_stat"],
-      "spe": json["stats"][5]["base_stat"],
+      PokemonStats.hp: json["stats"][0]["base_stat"],
+      PokemonStats.attack: json["stats"][1]["base_stat"],
+      PokemonStats.defense: json["stats"][2]["base_stat"],
+      PokemonStats.specialAttack: json["stats"][3]["base_stat"],
+      PokemonStats.specialDefense: json["stats"][4]["base_stat"],
+      PokemonStats.speed: json["stats"][5]["base_stat"],
     };
     var types = json["types"] as List;
-    type = TypePokemon.values.firstWhere((element) =>
-        element.toString() == "TypePokemon.${types[0]["type"]["name"]}");
+    type = PokemonType.values.firstWhere((element) =>
+        element.toString() == "PokemonType.${types[0]["type"]["name"]}");
     if (types.length > 1) {
-      subType = TypePokemon.values.firstWhere((element) =>
-          element.toString() == "TypePokemon.${types[1]["type"]["name"]}");
+      subType = PokemonType.values.firstWhere((element) =>
+          element.toString() == "PokemonType.${types[1]["type"]["name"]}");
     }
     height = json["height"];
     weight = json["weight"];

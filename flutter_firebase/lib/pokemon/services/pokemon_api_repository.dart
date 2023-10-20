@@ -9,4 +9,7 @@ class PokemonApiRepository {
           {required int limit, required int offset}) async =>
       await http.get(Uri.https("pokeapi.co", "/api/v2/pokemon",
           {"limit": limit.toString(), "offset": offset.toString()}));
+
+  Future<http.Response> getGeneration({required String name}) async =>
+      await http.get(Uri.https("pokeapi.co", "/api/v2/generation/$name"));
 }

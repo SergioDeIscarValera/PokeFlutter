@@ -29,10 +29,9 @@ class PokemonInfo extends StatelessWidget {
               return Container(
                 height: height,
                 decoration: BoxDecoration(
-                  color: Color(PokemonTypeToColor.getColor(pokemonInfoController
-                              .pokemonSelected.type
-                              .toString()) ??
-                          0xFFFFFFFF)
+                  color: PokemonTypeToColor.getColor(
+                          pokemonInfoController.pokemonSelected.type,
+                          Colors.white)
                       .withOpacity(0.6),
                 ),
                 child: Padding(
@@ -248,10 +247,9 @@ class PokemonInfoMenu extends StatelessWidget {
                   text: "About",
                   borderColor: pokemonInfoController.flagMenu
                       ? Colors.transparent
-                      : Color(PokemonTypeToColor.getColor(pokemonInfoController
-                              .pokemonSelected.type
-                              .toString()) ??
-                          0xFFFFFFFF),
+                      : PokemonTypeToColor.getColor(
+                          pokemonInfoController.pokemonSelected.type,
+                          Colors.white),
                   textColor: pokemonInfoController.flagMenu
                       ? Colors.grey
                       : Colors.black,
@@ -268,10 +266,9 @@ class PokemonInfoMenu extends StatelessWidget {
                 child: PokemonInfoMenuItem(
                   text: "Stats",
                   borderColor: pokemonInfoController.flagMenu
-                      ? Color(PokemonTypeToColor.getColor(pokemonInfoController
-                              .pokemonSelected.type
-                              .toString()) ??
-                          0xFFFFFFFF)
+                      ? PokemonTypeToColor.getColor(
+                          pokemonInfoController.pokemonSelected.type,
+                          Colors.white)
                       : Colors.transparent,
                   textColor: pokemonInfoController.flagMenu
                       ? Colors.black

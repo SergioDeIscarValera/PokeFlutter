@@ -1,5 +1,6 @@
 import 'package:PokeFlutter/pokemon/models/pokemon_dto.dart';
 import 'package:PokeFlutter/pokemon/models/pokemon_filter_class.dart';
+import 'package:PokeFlutter/pokemon/models/pokemon_type.dart';
 import 'package:PokeFlutter/pokemon/services/pokemon_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -71,19 +72,7 @@ class PokemonController extends GetxController {
   }
 
   Future<void> filterAllPokemons({required PokemonFilter filter}) async {
-    var value = PokemonRepository()
-        .getAllPokemons()
-        .where((pokemon) =>
-            pokemon.name!.toLowerCase().contains(filter.textFild.toLowerCase()))
-        .toList();
-
-    if (value.isEmpty) {
-      Get.snackbar(
-        "Error",
-        "No se encontraron pokemones con ese nombre",
-        backgroundColor: Colors.red.withOpacity(0.4),
-      );
-    }
+    var value = PokemonRepository().getAllPokemonsFilter(filter);
     pokemonList.value = value.sublist(0, value.length > 10 ? 10 : value.length);
   }
 }
