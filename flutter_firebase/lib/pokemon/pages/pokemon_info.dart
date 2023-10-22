@@ -1,4 +1,5 @@
 import 'package:PokeFlutter/pokemon/structure/controllers/pokemon_info_controller.dart';
+import 'package:PokeFlutter/pokemon/utils/pokemon_generation_utils.dart';
 import 'package:PokeFlutter/pokemon/utils/pokemon_type_to_color.dart';
 import 'package:PokeFlutter/pokemon/widgets/pokemon_card_type.dart';
 import 'package:PokeFlutter/pokemon/widgets/pokemon_stats_chart.dart';
@@ -14,7 +15,7 @@ class PokemonInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     PokemonInfoController pokemonInfoController = Get.find();
 
-    var id = Get.arguments["id"];
+    var id = Get.arguments != null ? Get.arguments["id"] : 0;
     pokemonInfoController.getFullPokemonById(id: id);
     var height = MediaQuery.of(context).size.height;
 
@@ -219,6 +220,26 @@ class PokemonInfoMenuAbout extends StatelessWidget {
                   fontSize: 18,
                 ),
               ],
+            ),
+            const SizedBox(height: 20),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  gradient: PokemonGenerationsUtils.getGradient(
+                      pokemonInfoController.pokemonSelected.generations,
+                      Colors.black),
+                  border: Border.all(color: Colors.white, width: 2)),
+              child: Text(
+                PokemonGenerationsUtils.convert(pokemonInfoController
+                        .pokemonSelected.generations
+                        .toString())
+                    .name,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                ),
+              ),
             )
           ],
         );

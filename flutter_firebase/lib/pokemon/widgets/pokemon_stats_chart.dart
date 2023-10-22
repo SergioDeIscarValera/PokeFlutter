@@ -1,9 +1,8 @@
 import 'package:PokeFlutter/pokemon/models/pokemon_stats.dart';
-import 'package:PokeFlutter/pokemon/models/pokemon_type.dart';
 import 'package:PokeFlutter/pokemon/utils/pokemon_stat_to_color.dart';
+import 'package:PokeFlutter/pokemon/widgets/barchart_axieTitle.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
 
 class PokemonStatsChart extends StatelessWidget {
   static int count = 0; // NO INCREMENTA VALUE EN getAxiTitles
@@ -54,16 +53,22 @@ class PokemonStatsChart extends StatelessWidget {
           titlesData: FlTitlesData(
             show: true,
             topTitles: AxisTitles(
-                sideTitles: SideTitles(
-              showTitles: true,
-              getTitlesWidget: (value, meta) => getAxiTitles(
-                value: value,
-                titles: stats?.values.map((e) => e.toString()).toList() ?? [],
-                meta: meta,
-                angle: angle,
-                offset: offsetTop,
+              sideTitles: SideTitles(
+                showTitles: true,
+                getTitlesWidget: (value, meta) => getAxiTitles(
+                  value: value,
+                  titles: stats?.values.map((e) => e.toString()).toList() ?? [],
+                  meta: meta,
+                  angle: angle,
+                  offset: offsetTop,
+                  setIndex: (newIndex) => count = newIndex,
+                  index: count,
+                  limit: PokemonStats.values.length,
+                  color: (index) => PokemonStatsToColor.getColor(
+                      PokemonStats.values[index], Colors.black),
+                ),
               ),
-            )),
+            ),
             leftTitles:
                 const AxisTitles(sideTitles: SideTitles(showTitles: false)),
             rightTitles:
@@ -79,6 +84,11 @@ class PokemonStatsChart extends StatelessWidget {
                   meta: meta,
                   angle: angle,
                   offset: offsetBottom,
+                  setIndex: (newIndex) => count = newIndex,
+                  index: count,
+                  limit: PokemonStats.values.length,
+                  color: (index) => PokemonStatsToColor.getColor(
+                      PokemonStats.values[index], Colors.black),
                 ),
               ),
             ),
@@ -92,38 +102,4 @@ class PokemonStatsChart extends StatelessWidget {
       ),
     );
   }
-}
-
-Widget getAxiTitles(
-    {required double value,
-    required List<String> titles,
-    required TitleMeta meta,
-    double fontSize = 14,
-    double angle = 0,
-    offset = Offset.zero}) {
-  final style = TextStyle(
-    color: PokemonStatsToColor.getColor(
-        PokemonStats.values[PokemonStatsChart.count++], Colors.black),
-    fontWeight: FontWeight.bold,
-    fontSize: fontSize,
-  );
-
-  PokemonStatsChart.count--;
-
-  Widget text = Transform.translate(
-    offset: offset,
-    child: Transform.rotate(
-      angle: angle * math.pi / 180,
-      child: Text(
-        titles[PokemonStatsChart.count++], // NO INCREMENTA VALUE
-        style: style,
-      ),
-    ),
-  );
-
-  if (PokemonStatsChart.count == 6) {
-    PokemonStatsChart.count = 0;
-  }
-
-  return SideTitleWidget(axisSide: meta.axisSide, child: text);
 }

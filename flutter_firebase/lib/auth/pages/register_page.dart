@@ -3,7 +3,6 @@ import 'package:PokeFlutter/auth/utils/validators_utils.dart';
 import 'package:PokeFlutter/auth/widgets/button_modern.dart';
 import 'package:PokeFlutter/auth/widgets/square_tile.dart';
 import 'package:PokeFlutter/auth/widgets/text_field_modern.dart';
-import 'package:PokeFlutter/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

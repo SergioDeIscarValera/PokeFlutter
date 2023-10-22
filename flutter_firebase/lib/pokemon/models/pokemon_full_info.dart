@@ -1,5 +1,7 @@
+import 'package:PokeFlutter/pokemon/models/pokemon_generations.dart';
 import 'package:PokeFlutter/pokemon/models/pokemon_stats.dart';
 import 'package:PokeFlutter/pokemon/models/pokemon_type.dart';
+import 'package:PokeFlutter/pokemon/services/pokemon_repository.dart';
 
 class PokemonFullInfo {
   PokemonFullInfo(
@@ -11,7 +13,8 @@ class PokemonFullInfo {
       this.image,
       this.imageShiny,
       this.height,
-      this.weight});
+      this.weight,
+      this.generations});
 
   int? id;
   String? name;
@@ -22,6 +25,7 @@ class PokemonFullInfo {
   PokemonType? subType;
   int? height;
   int? weight;
+  PokemonGenerations? generations;
 
   PokemonFullInfo.fromJson(Map<String, dynamic> json) {
     id = json["id"];
@@ -45,5 +49,7 @@ class PokemonFullInfo {
     }
     height = json["height"];
     weight = json["weight"];
+
+    generations = PokemonRepository().getGeneration(namePokemon: name!);
   }
 }

@@ -3,5 +3,6 @@ class Routes {
   static const REGISTER = '/auth/register';
   static const POKEMON_HOME = '/pokemon/home';
   static const POKEMON_FAVORITES = '/pokemon/favorites';
+  static const POKEMON_FAVORITES_STATISTICS = '/pokemon/favorites/statistics';
   static const POKEMON_INFO = '/pokemon/info';
 }
