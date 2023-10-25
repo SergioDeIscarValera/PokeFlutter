@@ -17,6 +17,7 @@ class UserFavoritesController extends GetxController {
 
   Future<void> _addFavorite(
       {required String email, required PokemonDto poke}) async {
+    await refreshFavorites(email: email, pokemonController: Get.find());
     favorites.add(poke);
     favorites.value = favorites.value.toSet().toList();
     await PokemonFireBaseRepository().setFavorites(
@@ -25,6 +26,7 @@ class UserFavoritesController extends GetxController {
 
   Future<void> _removeFavorite(
       {required String email, required PokemonDto poke}) async {
+    await refreshFavorites(email: email, pokemonController: Get.find());
     favorites.removeWhere((element) => element.id == poke.id);
     await PokemonFireBaseRepository().setFavorites(
         email: email, favorites: _pokemonsToIds(pokemons: favorites.toList()));

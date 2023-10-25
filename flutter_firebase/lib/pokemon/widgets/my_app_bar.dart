@@ -1,21 +1,22 @@
-import 'package:PokeFlutter/auth/structure/controllers/auth_controller.dart';
-import 'package:PokeFlutter/routes/app_routes.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class MyAppBar extends StatelessWidget {
   const MyAppBar({
     super.key,
-    required this.authController,
+    required this.userName,
     required this.leftIcon,
+    required this.rightIcon,
     required this.leftFuntion,
+    required this.rightFuntion,
     required this.textTap,
   });
 
   final IconData leftIcon;
+  final IconData rightIcon;
   final Function leftFuntion;
-  final AuthController authController;
+  final Function rightFuntion;
   final Function textTap;
+  final String? userName;
 
   @override
   Widget build(BuildContext context) {
@@ -31,11 +32,9 @@ class MyAppBar extends StatelessWidget {
           children: [
             IconButton(
               onPressed: () {
-                authController.signOut(
-                  onSingOut: () => Get.offAllNamed(Routes.LOGIN),
-                );
+                rightFuntion.call();
               },
-              icon: const Icon(Icons.logout),
+              icon: Icon(rightIcon),
             ),
             GestureDetector(
               onTap: () {
@@ -51,7 +50,7 @@ class MyAppBar extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    authController.firebaseUser?.email ?? "Anonymous",
+                    userName ?? "Anonymous",
                     style: TextStyle(
                       color: Colors.grey[600],
                       fontSize: 8,

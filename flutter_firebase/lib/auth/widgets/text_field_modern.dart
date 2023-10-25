@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class TextFieldModern extends StatelessWidget {
   final TextEditingController controller;
-  final validator;
+  final String? Function(String?)? validator;
   final String? label;
   final String? hint;
   final Icon? icon;
@@ -27,22 +26,21 @@ class TextFieldModern extends StatelessWidget {
         controller: controller,
         validator: validator,
         decoration: InputDecoration(
-          enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Colors.white,
+            enabledBorder: const OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.white,
+              ),
             ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Colors.grey.shade400,
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.grey.shade400,
+              ),
             ),
-          ),
-          fillColor: Colors.grey.shade200,
-          filled: true,
-          label: Text(label ?? ""),
-          prefixIcon: icon,
-          hintText: hint
-        ),
+            fillColor: Colors.grey.shade200,
+            filled: true,
+            label: Text(label ?? ""),
+            prefixIcon: icon,
+            hintText: hint),
         obscureText: obscureText,
       ),
     );

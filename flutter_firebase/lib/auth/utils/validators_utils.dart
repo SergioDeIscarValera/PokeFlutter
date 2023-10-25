@@ -1,6 +1,6 @@
 import 'package:get/get_utils/get_utils.dart';
 
-class FormValidator{
+class FormValidator {
   String? isValidName(String? text) {
     if (text == null || text.isEmpty || text.length < 3) {
       return "Este nombre NO es válido";

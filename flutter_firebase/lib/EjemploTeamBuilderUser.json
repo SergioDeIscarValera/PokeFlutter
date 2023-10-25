@@ -1,0 +1,49 @@
+{
+    "owner": [ // Equipos del propietario, solo el propietario puede añadir más personas
+        {
+            "UUID": "jbxcvbnmjhgfdccxv", // UUID del equipo, cuando se añade se ha de consultar el ultimo id y sumarle 1
+            "name": "Equipo primera gen", // Nombre del equipo
+            "pokemons": [ // Id de los pokemons del equipo, maximo 6
+                12,
+                23,
+                14,
+                45
+            ],
+            "invited": [ // Invitaciones enviadas, permisos concedidos
+                {
+                    "paco@email.com": true
+                },
+                {
+                    "pedro@email.com": false
+                }
+            ]
+        }
+    ],
+    "accepted": [ // Equipos aceptados
+        {
+            "paco@email.com": "nfdghjkl,mnbvc", // usuario: id del equipo dentro del propietario
+            //"permissions": false // permisos: false-lectura, true-escritura
+        },
+        {
+            "pedro@email.com": "nfdghjkl,mnbvc",
+            //"permissions": true
+        }
+    ]
+}
+//Otro documento
+{
+    "invited": [ // Equipos a los que se ha sido invitado, notificar al usuario
+        {
+            "user": "paco@email.com",
+            "teamUUID": "oiuytrfdcvb", // id del equipo
+            "teamName": "Equipo segunda gen", // nombre del equipo
+            "permissions": true // permisos: false-lectura, true-escritura
+        },
+        {
+            "user": "pedro@email.com",
+            "team": "lkjhgfvbghjkl", // id del equipo
+            "teamName": "Equipo primera gen", // nombre del equipo
+            "permissions": false // permisos: false-lectura, true-escritura
+        }
+    ],
+}

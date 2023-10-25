@@ -70,4 +70,17 @@ class AuthFirebaseRepository {
       return null;
     }
   }
+
+  Future<bool> isEmailAlreadyRegistered(String email) async {
+    try {
+      final userCredential = await FirebaseAuth.instance
+          .fetchSignInMethodsForEmail(email)
+          .then((value) {
+        return value;
+      });
+      return userCredential.isNotEmpty;
+    } catch (e) {
+      return false;
+    }
+  }
 }

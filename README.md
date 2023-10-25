@@ -4,7 +4,13 @@ Aplicación android con flutter ([GetX](https://pub.dev/packages/get)) consumien
 
 ## Descripción
 
-La aplicación cuenta con un login con correo y contraseña, registro con correo y contraseña, inicio de sesión con Google, una pantalla principal con un listado de pokemones y una pantalla donde se mustran los favoritos del usuario.
+La aplicación cuenta con un login con correo y contraseña, registro con correo y contraseña, inicio de sesión con Google.
+
+Una pantalla principal con un listado de pokemones donde puedes filtrar por diferentes tipos de filtros(tipos, generación, estadisticas...).
+
+Una pestaña donde se encuntran los favoritos del usuario, una pestaña donde muestra estadisticas sobre los favoritos del usuario, una pantalla para las notificaciónes (invitaciones a equipos).
+
+Una ventana donde estan los equipos del usuario (propios e invitados)...
 
 ## Screenshots
 
@@ -38,5 +44,18 @@ La aplicación cuenta con un login con correo y contraseña, registro con correo
     <td><img src="./assets/pie_chart.png" width="150" height="300" /></td>
     <td><img src="./assets/bar_chart.png" width="150" height="300" /></td>
     <td><img src="./assets/radar_chart.png" width="150" height="300" /></td>
+  </tr>
+  <tr>
+    <td>Teams:
+  </tr>
+    <tr>
+    <td><img src="./assets/notifications.png" width="150" height="300" /></td>
+    <td><img src="./assets/teams_preview.png" width="150" height="300" /></td>
+    <td><img src="./assets/team_share.png" width="150" height="300" /></td>
+  </tr>
+  </tr>
+    <tr>
+    <td><img src="./assets/team_owner.png" width="150" height="300" /></td>
+    <td><img src="./assets/share.png" width="150" height="300" /></td>
   </tr>
 </table>

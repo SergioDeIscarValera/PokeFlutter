@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:PokeFlutter/auth/structure/controllers/auth_controller.dart';
 import 'package:PokeFlutter/pokemon/models/pokemon_dto.dart';
 import 'package:PokeFlutter/pokemon/models/pokemon_generations.dart';
@@ -8,11 +6,11 @@ import 'package:PokeFlutter/pokemon/models/pokemon_type.dart';
 import 'package:PokeFlutter/pokemon/structure/controllers/pokemon_favorites_statistics_controller.dart';
 import 'package:PokeFlutter/pokemon/structure/controllers/user_favorites_controller.dart';
 import 'package:PokeFlutter/pokemon/utils/pokemon_generation_utils.dart';
-import 'package:PokeFlutter/pokemon/utils/pokemon_stat_to_color.dart';
 import 'package:PokeFlutter/pokemon/utils/pokemon_type_to_color.dart';
 import 'package:PokeFlutter/pokemon/widgets/barchart_axieTitle.dart';
 import 'package:PokeFlutter/pokemon/widgets/my_app_bar.dart';
 import 'package:PokeFlutter/pokemon/widgets/pokemon_stats_chart.dart';
+import 'package:PokeFlutter/widgets/user_drawer.dart';
 import 'package:collection/collection.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -34,14 +32,21 @@ class PokemonFavoritesStatistics extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              MyAppBar(
-                authController: authController,
-                leftIcon: Icons.home,
-                leftFuntion: () {
-                  Get.back();
-                },
-                textTap: () {},
-              ),
+              Builder(builder: (context) {
+                return MyAppBar(
+                  rightFuntion: () {
+                    Get.back();
+                  },
+                  userName:
+                      authController.firebaseUser?.displayName ?? "Anonymous",
+                  rightIcon: Icons.arrow_back_ios_new,
+                  leftIcon: Icons.person,
+                  leftFuntion: () {
+                    Scaffold.of(context).openEndDrawer();
+                  },
+                  textTap: () {},
+                );
+              }),
               const SizedBox(height: 15),
               Expanded(
                 child: SingleChildScrollView(
@@ -55,7 +60,7 @@ class PokemonFavoritesStatistics extends StatelessWidget {
                       BarCharPokemon(
                         userFavoritesController: userFavoritesController,
                       ),
-                      _RadarChartPokemonContainer(
+                      RadarChartPokemonContainer(
                         userFavoritesController: userFavoritesController,
                         pokemonFSController: pokemonFSController,
                       )
@@ -67,12 +72,15 @@ class PokemonFavoritesStatistics extends StatelessWidget {
           ),
         ),
       ),
+      endDrawer: UserDrawer(
+        userName: authController.firebaseUser?.displayName ?? "Anonymous",
+      ),
     );
   }
 }
 
-class _RadarChartPokemonContainer extends StatelessWidget {
-  const _RadarChartPokemonContainer({
+class RadarChartPokemonContainer extends StatelessWidget {
+  const RadarChartPokemonContainer({
     super.key,
     required this.userFavoritesController,
     required this.pokemonFSController,

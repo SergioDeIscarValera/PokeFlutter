@@ -11,9 +11,7 @@ class SearchFilterController extends GetxController {
   bool get isFiltering => _isFiltering.value;
   set isFiltering(bool newValue) => _isFiltering.value = newValue;
 
-  final RxBool _moreFilterIsOpen = false.obs;
-  bool get moreFilterIsOpen => _moreFilterIsOpen.value;
-  set moreFilterIsOpen(bool newValue) => _moreFilterIsOpen.value = newValue;
+  final RxBool moreFilterIsOpen = false.obs;
 
   RxMap<PokemonStats, RangeValues> statsRangeValues =
       <PokemonStats, RangeValues>{}.obs;
@@ -25,8 +23,6 @@ class SearchFilterController extends GetxController {
 
   final Rx<PokemonGenerations?> generationFilter =
       Rx<PokemonGenerations?>(null);
-
-  final RxDouble test = 255.0.obs;
 
   PokemonController pokemonController = Get.find();
 
@@ -52,7 +48,7 @@ class SearchFilterController extends GetxController {
   }
 
   void changeMoreFilterIsOpen() {
-    moreFilterIsOpen = !moreFilterIsOpen;
+    moreFilterIsOpen.value = !moreFilterIsOpen.value;
   }
 
   void resetStatsRangeValues() {

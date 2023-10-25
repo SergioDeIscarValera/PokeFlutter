@@ -78,6 +78,10 @@ class PokemonRepository {
 
   //#endregion
 
+  PokemonDto getPokemonFromCacheById({required int id}) {
+    return _allPokemons.firstWhere((pokemon) => pokemon.id == id);
+  }
+
   List<PokemonDto> getPokemonListFromCache(
       {required int limit, required int offset}) {
     return _allPokemons.sublist(

@@ -1,18 +1,42 @@
-import 'package:PokeFlutter/pokemon/structure/controllers/search_filter_controller.dart';
+import 'package:PokeFlutter/pokemon/models/pokemon_dto.dart';
+import 'package:PokeFlutter/pokemon/models/pokemon_generations.dart';
+import 'package:PokeFlutter/pokemon/models/pokemon_stats.dart';
+import 'package:PokeFlutter/pokemon/models/pokemon_type.dart';
 import 'package:PokeFlutter/pokemon/widgets/more_filters.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class MySearch extends StatelessWidget {
-  const MySearch({super.key});
+  const MySearch({
+    super.key,
+    required this.pokemons,
+    required this.searchController,
+    required this.statsRangeValues,
+    required this.typeFilter,
+    required this.subTypeFilter,
+    required this.generationFilter,
+    required this.moreFilterIsOpen,
+    required this.changeMoreFilterIsOpen,
+    required this.resetStatsRangeValues,
+  });
+
+  final RxList<PokemonDto> pokemons;
+  final TextEditingController searchController;
+  final RxMap<PokemonStats, RangeValues> statsRangeValues;
+  final Rx<PokemonType?> typeFilter;
+  final Rx<PokemonType?> subTypeFilter;
+  final Rx<PokemonGenerations?> generationFilter;
+  final RxBool moreFilterIsOpen;
+  final Function changeMoreFilterIsOpen;
+  final Function resetStatsRangeValues;
 
   @override
   Widget build(BuildContext context) {
-    SearchFilterController searchFilterController = Get.find();
+    //SearchFilterController searchFilterController = Get.find();
     return SearchAnchor(
       builder: (context, controller) {
         return SearchBar(
-          controller: searchFilterController.searchController,
+          controller: searchController,
           onChanged: (value) {},
           onSubmitted: (value) {},
           textStyle: MaterialStateProperty.resolveWith(
@@ -35,7 +59,7 @@ class MySearch extends StatelessWidget {
               message: "Clear search",
               child: IconButton(
                 onPressed: () {
-                  searchFilterController.searchController.clear();
+                  searchController.clear();
                 },
                 icon: const Icon(Icons.cancel, color: Colors.white),
               ),
@@ -45,9 +69,9 @@ class MySearch extends StatelessWidget {
                 message: 'More filters',
                 child: IconButton(
                   onPressed: () {
-                    searchFilterController.changeMoreFilterIsOpen();
+                    changeMoreFilterIsOpen;
                     // Open bottom sheet
-                    if (searchFilterController.moreFilterIsOpen) {
+                    if (!moreFilterIsOpen.value) {
                       showModalBottomSheet(
                         context: context,
                         useSafeArea: true,
@@ -55,17 +79,18 @@ class MySearch extends StatelessWidget {
                         backgroundColor: Colors.transparent,
                         builder: (context) {
                           return MoreFilters(
-                            searchFilterController: searchFilterController,
+                            statsRangeValues: statsRangeValues,
+                            typeFilter: typeFilter,
+                            subTypeFilter: subTypeFilter,
+                            generationFilter: generationFilter,
+                            resetStatsRangeValues: resetStatsRangeValues,
                           );
                         },
-                      ).whenComplete(() =>
-                          searchFilterController.changeMoreFilterIsOpen());
+                      ).whenComplete(() => changeMoreFilterIsOpen);
                     }
                   },
                   icon: Icon(
-                    searchFilterController.moreFilterIsOpen
-                        ? Icons.close
-                        : Icons.tune,
+                    moreFilterIsOpen.value ? Icons.close : Icons.tune,
                     color: Colors.white,
                   ),
                 ),

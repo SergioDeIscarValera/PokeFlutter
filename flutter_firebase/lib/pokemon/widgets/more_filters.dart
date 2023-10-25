@@ -9,10 +9,21 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class MoreFilters extends StatelessWidget {
-  const MoreFilters({Key? key, required this.searchFilterController})
+  const MoreFilters(
+      {Key? key,
+      required this.typeFilter,
+      required this.subTypeFilter,
+      required this.generationFilter,
+      required this.resetStatsRangeValues,
+      required this.statsRangeValues})
       : super(key: key);
 
-  final SearchFilterController searchFilterController;
+  final Rx<PokemonType?> typeFilter;
+  final Rx<PokemonType?> subTypeFilter;
+  final Rx<PokemonGenerations?> generationFilter;
+  final Function resetStatsRangeValues;
+  final RxMap<PokemonStats, RangeValues> statsRangeValues;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -57,11 +68,11 @@ class MoreFilters extends StatelessWidget {
                           children: [
                             TypeFilter(
                               hint: "Select type...",
-                              typeFilter: searchFilterController.typeFilter,
+                              typeFilter: typeFilter,
                             ),
                             TypeFilter(
                               hint: "Select second type...",
-                              typeFilter: searchFilterController.subTypeFilter,
+                              typeFilter: subTypeFilter,
                             ),
                           ],
                         ),
@@ -80,13 +91,14 @@ class MoreFilters extends StatelessWidget {
                         const SizedBox(height: 20),
                         GenerationFilter(
                           hint: "Select generation...",
-                          genFilter: searchFilterController.generationFilter,
+                          genFilter: generationFilter,
                         ),
                       ],
                     ),
                     const SizedBox(height: 20),
                     StatsFilters(
-                      searchFilterController: searchFilterController,
+                      statsRangeValues: statsRangeValues,
+                      resetStatsRangeValues: resetStatsRangeValues,
                     ),
                   ],
                 ),
@@ -158,11 +170,13 @@ class GenerationFilter extends StatelessWidget {
 class StatsFilters extends StatelessWidget {
   const StatsFilters({
     super.key,
-    required this.searchFilterController,
+    required this.statsRangeValues,
+    required this.resetStatsRangeValues,
   });
 
-  final SearchFilterController searchFilterController;
   final double spaceBetween = 15;
+  final Function resetStatsRangeValues;
+  final RxMap<PokemonStats, RangeValues> statsRangeValues;
 
   @override
   Widget build(BuildContext context) {
@@ -186,9 +200,7 @@ class StatsFilters extends StatelessWidget {
               Tooltip(
                 message: "Reset stats values",
                 child: IconButton(
-                    onPressed: () {
-                      searchFilterController.resetStatsRangeValues();
-                    },
+                    onPressed: () => resetStatsRangeValues,
                     icon: const Icon(Icons.sync)),
               ),
             ],
@@ -197,53 +209,48 @@ class StatsFilters extends StatelessWidget {
           StatFilter(
             statKey: PokemonStats.hp,
             color: PokemonStatsToColor.getColor(PokemonStats.hp, Colors.black),
-            values: searchFilterController.statsRangeValues[PokemonStats.hp]!,
-            searchFilterController: searchFilterController,
+            values: statsRangeValues[PokemonStats.hp]!,
+            statsRangeValues: statsRangeValues,
           ),
           SizedBox(height: spaceBetween),
           StatFilter(
             statKey: PokemonStats.attack,
             color:
                 PokemonStatsToColor.getColor(PokemonStats.attack, Colors.black),
-            values:
-                searchFilterController.statsRangeValues[PokemonStats.attack]!,
-            searchFilterController: searchFilterController,
+            values: statsRangeValues[PokemonStats.attack]!,
+            statsRangeValues: statsRangeValues,
           ),
           SizedBox(height: spaceBetween),
           StatFilter(
             statKey: PokemonStats.defense,
             color: PokemonStatsToColor.getColor(
                 PokemonStats.defense, Colors.black),
-            values:
-                searchFilterController.statsRangeValues[PokemonStats.defense]!,
-            searchFilterController: searchFilterController,
+            values: statsRangeValues[PokemonStats.defense]!,
+            statsRangeValues: statsRangeValues,
           ),
           SizedBox(height: spaceBetween),
           StatFilter(
             statKey: PokemonStats.specialAttack,
             color: PokemonStatsToColor.getColor(
                 PokemonStats.specialAttack, Colors.black),
-            values: searchFilterController
-                .statsRangeValues[PokemonStats.specialAttack]!,
-            searchFilterController: searchFilterController,
+            values: statsRangeValues[PokemonStats.specialAttack]!,
+            statsRangeValues: statsRangeValues,
           ),
           SizedBox(height: spaceBetween),
           StatFilter(
             statKey: PokemonStats.specialDefense,
             color: PokemonStatsToColor.getColor(
                 PokemonStats.specialDefense, Colors.black),
-            values: searchFilterController
-                .statsRangeValues[PokemonStats.specialDefense]!,
-            searchFilterController: searchFilterController,
+            values: statsRangeValues[PokemonStats.specialDefense]!,
+            statsRangeValues: statsRangeValues,
           ),
           SizedBox(height: spaceBetween),
           StatFilter(
             statKey: PokemonStats.speed,
             color:
                 PokemonStatsToColor.getColor(PokemonStats.speed, Colors.black),
-            values:
-                searchFilterController.statsRangeValues[PokemonStats.speed]!,
-            searchFilterController: searchFilterController,
+            values: statsRangeValues[PokemonStats.speed]!,
+            statsRangeValues: statsRangeValues,
           ),
         ],
       ),
@@ -257,10 +264,10 @@ class StatFilter extends StatelessWidget {
     required this.statKey,
     required this.color,
     required this.values,
-    required this.searchFilterController,
+    required this.statsRangeValues,
   }) : super(key: key);
 
-  final SearchFilterController searchFilterController;
+  final RxMap<PokemonStats, RangeValues> statsRangeValues;
   final PokemonStats statKey;
   final Color color;
   final RangeValues values;
@@ -289,7 +296,7 @@ class StatFilter extends StatelessWidget {
           child: RangeSlider(
             values: values,
             onChanged: (newValue) {
-              searchFilterController.statsRangeValues[statKey] = newValue;
+              statsRangeValues[statKey] = newValue;
             },
             min: 0.0,
             max: 255.0,

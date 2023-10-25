@@ -1,0 +1,147 @@
+import 'package:PokeFlutter/pokemon/models/pokemon_dto.dart';
+import 'package:PokeFlutter/pokemon/models/pokemon_filter_class.dart';
+import 'package:PokeFlutter/pokemon/models/pokemon_generations.dart';
+import 'package:PokeFlutter/pokemon/models/pokemon_stats.dart';
+import 'package:PokeFlutter/pokemon/models/pokemon_type.dart';
+import 'package:PokeFlutter/pokemon/structure/controllers/pokemon_controller.dart';
+import 'package:PokeFlutter/teams/models/team_dto.dart';
+import 'package:PokeFlutter/teams/models/team_permissions.dart';
+import 'package:PokeFlutter/teams/services/teams_firebase.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+class TeamsEditController extends GetxController {
+  RxList<PokemonDto> team = <PokemonDto>[].obs;
+  RxMap<String, bool> teamPermissions = <String, bool>{}.obs;
+
+  TextEditingController searchController = TextEditingController();
+  final Rx<PokemonType?> typeFilter = Rx<PokemonType?>(null);
+  final Rx<PokemonType?> subTypeFilter = Rx<PokemonType?>(null);
+
+  final RxBool moreFilterIsOpen = false.obs;
+
+  RxMap<PokemonStats, RangeValues> statsRangeValues =
+      <PokemonStats, RangeValues>{}.obs;
+
+  final Rx<PokemonGenerations?> generationFilter =
+      Rx<PokemonGenerations?>(null);
+
+  PokemonController pokemonController = Get.find();
+
+  @override
+  void onReady() {
+    resetStatsRangeValues();
+    searchController.addListener(() {
+      applyFilters();
+    });
+    typeFilter.listen((_) {
+      applyFilters();
+    });
+    subTypeFilter.listen((_) {
+      applyFilters();
+    });
+    statsRangeValues.listen((_) {
+      applyFilters();
+    });
+    generationFilter.listen((_) {
+      applyFilters();
+    });
+    super.onReady();
+  }
+
+  void setListeners(TeamDto argumentTeam, String email) {
+    TeamsFirebase().setListeneOwner(
+      email: email,
+      callback: (team) {
+        this.team.value = team
+            .firstWhere((element) => element.UUID == argumentTeam.UUID)
+            .pokemons!;
+        teamPermissions.value = team
+            .firstWhere((element) => element.UUID == argumentTeam.UUID)
+            .users!;
+      },
+    );
+  }
+
+  void addPokemon(String email, String uuidTeam, PokemonDto pokemon) {
+    TeamsFirebase()
+        .addPokemon(email: email, uuidTeam: uuidTeam, pokemon: pokemon);
+  }
+
+  void removePokemon(String email, String uuidTeam, PokemonDto pokemon) {
+    TeamsFirebase()
+        .removePokemon(email: email, uuidTeam: uuidTeam, pokemon: pokemon);
+  }
+
+  void changeMoreFilterIsOpen() {
+    moreFilterIsOpen.value = !moreFilterIsOpen.value;
+  }
+
+  void resetStatsRangeValues() {
+    statsRangeValues.value = {
+      PokemonStats.hp: const RangeValues(0, 255),
+      PokemonStats.attack: const RangeValues(0, 255),
+      PokemonStats.defense: const RangeValues(0, 255),
+      PokemonStats.specialAttack: const RangeValues(0, 255),
+      PokemonStats.specialDefense: const RangeValues(0, 255),
+      PokemonStats.speed: const RangeValues(0, 255),
+    };
+  }
+
+  void applyFilters() {
+    pokemonController.filterAllPokemons(
+        filter: PokemonFilter(
+      textFild: searchController.value.text,
+      type: typeFilter.value,
+      subType: subTypeFilter.value,
+      stats: statsRangeValues.value,
+      generation: generationFilter.value,
+    ));
+  }
+
+  void changePermission({
+    required String emailOwner,
+    required String emailUser,
+    required String uuid,
+  }) {
+    TeamsFirebase().changePermission(
+      emailOwner: emailOwner,
+      emailUser: emailUser,
+      newPermissions: teamPermissions.value[emailUser]!,
+      uuid: uuid,
+      onChange: () {
+        Get.snackbar(
+          "Success",
+          "Permission changed successfully",
+          backgroundColor: Colors.green.withOpacity(0.2),
+        );
+      },
+    );
+  }
+
+  void changePermissionLocal({
+    required String emailUser,
+    required TeamPermissions permission,
+  }) {
+    teamPermissions[emailUser] = permission.permission;
+  }
+
+  void removeUser({
+    required String emailOwner,
+    required String emailUser,
+    required String uuid,
+  }) {
+    TeamsFirebase().removeUser(
+      emailOwner: emailOwner,
+      emailUser: emailUser,
+      uuid: uuid,
+      onRemove: () {
+        Get.snackbar(
+          "Success",
+          "User removed successfully",
+          backgroundColor: Colors.green.withOpacity(0.2),
+        );
+      },
+    );
+  }
+}

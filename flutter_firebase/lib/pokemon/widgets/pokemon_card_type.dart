@@ -25,6 +25,7 @@ class PokemonCardType extends StatelessWidget {
         style: TextStyle(
           color: Colors.black,
           fontSize: fontSize,
+          decoration: TextDecoration.none,
         ),
       ),
     );

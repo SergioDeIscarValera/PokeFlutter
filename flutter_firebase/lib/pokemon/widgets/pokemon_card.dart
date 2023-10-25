@@ -12,6 +12,12 @@ class PokemonCard extends StatelessWidget {
   PokemonCard({
     Key? key,
     required this.pokemon,
+    required this.onButtonPressed,
+    required this.icon,
+    required this.iconSecondary,
+    required this.checkPokemon,
+    required this.iconColor,
+    required this.iconSecondaryColor,
   }) : super(key: key) {
     _cardColor = PokemonTypeToColor.getColor(pokemon.type, Colors.white);
   }
@@ -19,6 +25,13 @@ class PokemonCard extends StatelessWidget {
   final UserFavoritesController _userFavoritesController = Get.find();
   final PokemonDto pokemon;
   late Color _cardColor;
+  final Function(AuthController, UserFavoritesController, String)
+      onButtonPressed;
+  final IconData icon;
+  final IconData iconSecondary;
+  final bool Function(PokemonDto) checkPokemon;
+  final Color iconColor;
+  final Color iconSecondaryColor;
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +59,7 @@ class PokemonCard extends StatelessWidget {
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,
+                        decoration: TextDecoration.none,
                       ),
                     ),
                     PokemonCardType(type: pokemon.type),
@@ -92,25 +106,16 @@ class PokemonCard extends StatelessWidget {
             top: 3,
             child: Obx(() {
               var email = _authController.firebaseUser?.email;
-              var isFavorite =
+              /*var isFavorite =
                   _userFavoritesController.isFavorite(poke: pokemon);
-
-              Function onPressed;
-              if (_authController.firebaseUser == null ||
-                  _authController.firebaseUser?.isAnonymous == true) {
-                onPressed = () => Get.snackbar(
-                    "Error", "You must be logged in to add favorites");
-              } else {
-                onPressed = () => _userFavoritesController.changeFavorite(
-                      email: email ?? "",
-                      poke: pokemon,
-                    );
-              }
-
-              var icon = isFavorite ? Icons.favorite : Icons.favorite_border;
-              var color = isFavorite ? Colors.red : Colors.white;
+              var iconSelected = isFavorite ? iconSecondary : icon;
+              var color = isFavorite ? Colors.red : Colors.white;*/
+              var check = checkPokemon.call(pokemon);
+              var iconSelected = check ? iconSecondary : icon;
+              var color = check ? iconSecondaryColor : iconColor;
               return GestureDetector(
-                onTap: () => onPressed.call(),
+                onTap: () => onButtonPressed.call(
+                    _authController, _userFavoritesController, email ?? ""),
                 child: Container(
                   padding: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
@@ -118,7 +123,7 @@ class PokemonCard extends StatelessWidget {
                     color: Colors.black.withOpacity(0.5),
                   ),
                   child: Icon(
-                    icon,
+                    iconSelected,
                     color: color,
                   ),
                 ),

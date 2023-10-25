@@ -1,6 +1,7 @@
 import 'package:PokeFlutter/pokemon/models/pokemon_dto.dart';
 import 'package:PokeFlutter/pokemon/models/pokemon_filter_class.dart';
 import 'package:PokeFlutter/pokemon/services/pokemon_repository.dart';
+import 'package:PokeFlutter/teams/services/teams_firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';

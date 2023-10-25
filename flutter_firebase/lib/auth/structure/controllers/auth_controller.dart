@@ -1,5 +1,7 @@
 import 'package:PokeFlutter/auth/services/auth_firebase_repository.dart';
 import 'package:PokeFlutter/routes/app_routes.dart';
+import 'package:PokeFlutter/teams/models/team_notification.dart';
+import 'package:PokeFlutter/teams/services/teams_firebase.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -30,6 +32,18 @@ class AuthController extends GetxController {
     if (firebaseUser?.isAnonymous == false && firebaseUser?.uid != null ||
         firebaseUser?.isAnonymous == true) {
       Get.offAllNamed(Routes.POKEMON_HOME);
+      TeamsFirebase().setListenerNotifications(
+          email: firebaseUser!.email!,
+          callback: (List<TeamNotification> invitations) {
+            if (invitations.isNotEmpty) {
+              Get.snackbar(
+                "Invitaciones",
+                "Tienes ${invitations.length} invitaciones pendientes",
+                onTap: (snack) => Get.toNamed(Routes.TEAMS_NOTIFICATIONS),
+                icon: const Icon(Icons.people),
+              );
+            }
+          });
     } else {
       Get.offAllNamed(Routes.LOGIN);
     }
@@ -66,7 +80,7 @@ class AuthController extends GetxController {
     }
   }
 
-  signOut({Function? onSingOut}) async {
+  signOut() async {
     return await _auth.signOut();
   }
 }
