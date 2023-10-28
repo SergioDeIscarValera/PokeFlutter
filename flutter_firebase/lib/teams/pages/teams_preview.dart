@@ -1,5 +1,5 @@
 import 'package:PokeFlutter/auth/structure/controllers/auth_controller.dart';
-import 'package:PokeFlutter/pokemon/widgets/my_app_bar.dart';
+import 'package:PokeFlutter/widgets/my_app_bar.dart';
 import 'package:PokeFlutter/teams/structure/controllers/teams_preview_controller.dart';
 import 'package:PokeFlutter/teams/widgets/newCard_card.dart';
 import 'package:PokeFlutter/teams/widgets/team_card.dart';

@@ -38,11 +38,12 @@ class TeamsPreviewController extends GetxController {
     await TeamsFirebase().createTeam(
       email: _emailUser!,
       team: TeamDto(
-          UUID: "-1",
-          owner: _emailUser,
-          name: teamNameController.text.trim(),
-          pokemons: [],
-          users: {}),
+        UUID: "-1",
+        owner: _emailUser,
+        name: teamNameController.text.trim(),
+        pokemons: {},
+        users: {},
+      ),
     );
   }
 

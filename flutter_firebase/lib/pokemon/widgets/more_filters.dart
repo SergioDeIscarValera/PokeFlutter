@@ -1,9 +1,6 @@
 import 'package:PokeFlutter/pokemon/models/pokemon_generations.dart';
 import 'package:PokeFlutter/pokemon/models/pokemon_stats.dart';
 import 'package:PokeFlutter/pokemon/models/pokemon_type.dart';
-import 'package:PokeFlutter/pokemon/structure/controllers/search_filter_controller.dart';
-import 'package:PokeFlutter/pokemon/utils/pokemon_stat_to_color.dart';
-import 'package:PokeFlutter/pokemon/utils/pokemon_type_to_color.dart';
 import 'package:PokeFlutter/utils/string_funtions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -129,7 +126,7 @@ class GenerationFilter extends StatelessWidget {
                   value: gen,
                   child: Text(
                       StringFunctions.capitalize(
-                          PokemonGenerationsNamed(gen).name),
+                          PokemonGenerationsUtils(gen).name),
                       style: const TextStyle(
                         fontSize: 16,
                         color: Colors.black,
@@ -200,7 +197,7 @@ class StatsFilters extends StatelessWidget {
               Tooltip(
                 message: "Reset stats values",
                 child: IconButton(
-                    onPressed: () => resetStatsRangeValues,
+                    onPressed: () => resetStatsRangeValues.call(),
                     icon: const Icon(Icons.sync)),
               ),
             ],
@@ -208,47 +205,42 @@ class StatsFilters extends StatelessWidget {
           SizedBox(height: spaceBetween),
           StatFilter(
             statKey: PokemonStats.hp,
-            color: PokemonStatsToColor.getColor(PokemonStats.hp, Colors.black),
+            color: PokemonStats.hp.color,
             values: statsRangeValues[PokemonStats.hp]!,
             statsRangeValues: statsRangeValues,
           ),
           SizedBox(height: spaceBetween),
           StatFilter(
             statKey: PokemonStats.attack,
-            color:
-                PokemonStatsToColor.getColor(PokemonStats.attack, Colors.black),
+            color: PokemonStats.attack.color,
             values: statsRangeValues[PokemonStats.attack]!,
             statsRangeValues: statsRangeValues,
           ),
           SizedBox(height: spaceBetween),
           StatFilter(
             statKey: PokemonStats.defense,
-            color: PokemonStatsToColor.getColor(
-                PokemonStats.defense, Colors.black),
+            color: PokemonStats.defense.color,
             values: statsRangeValues[PokemonStats.defense]!,
             statsRangeValues: statsRangeValues,
           ),
           SizedBox(height: spaceBetween),
           StatFilter(
             statKey: PokemonStats.specialAttack,
-            color: PokemonStatsToColor.getColor(
-                PokemonStats.specialAttack, Colors.black),
+            color: PokemonStats.specialAttack.color,
             values: statsRangeValues[PokemonStats.specialAttack]!,
             statsRangeValues: statsRangeValues,
           ),
           SizedBox(height: spaceBetween),
           StatFilter(
             statKey: PokemonStats.specialDefense,
-            color: PokemonStatsToColor.getColor(
-                PokemonStats.specialDefense, Colors.black),
+            color: PokemonStats.specialDefense.color,
             values: statsRangeValues[PokemonStats.specialDefense]!,
             statsRangeValues: statsRangeValues,
           ),
           SizedBox(height: spaceBetween),
           StatFilter(
             statKey: PokemonStats.speed,
-            color:
-                PokemonStatsToColor.getColor(PokemonStats.speed, Colors.black),
+            color: PokemonStats.speed.color,
             values: statsRangeValues[PokemonStats.speed]!,
             statsRangeValues: statsRangeValues,
           ),
@@ -282,7 +274,7 @@ class StatFilter extends StatelessWidget {
         Expanded(
           flex: 1,
           child: Text(
-            "${PokemonStatsNamed(statKey).name}:",
+            "${PokemonStatsUtils(statKey).name}:",
             style: TextStyle(color: color, fontSize: 16),
           ),
         ),
@@ -332,15 +324,16 @@ class TypeFilter extends StatelessWidget {
                 child: Container(
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: Colors.white,
-                        width: 3,
-                      ),
-                      color: PokemonTypeToColor.getColor(type, Colors.black)),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: Colors.white,
+                      width: 3,
+                    ),
+                    color: type.color,
+                  ),
                   margin: const EdgeInsets.all(0),
                   child: Text(
-                      StringFunctions.capitalize(PokemonTypeNamed(type).name),
+                      StringFunctions.capitalize(PokemonTypeUtils(type).name),
                       style: const TextStyle(
                         fontSize: 16,
                         color: Colors.white,

@@ -1,5 +1,4 @@
 import 'package:PokeFlutter/pokemon/models/pokemon_stats.dart';
-import 'package:PokeFlutter/pokemon/utils/pokemon_stat_to_color.dart';
 import 'package:PokeFlutter/pokemon/widgets/barchart_axieTitle.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +32,7 @@ class PokemonStatsChart extends StatelessWidget {
               BarChartRodData(
                 toY: statValue.toDouble(),
                 width: 20,
-                color: PokemonStatsToColor.getColor(statName, Colors.white),
+                color: statName.color,
                 borderRadius: BorderRadius.circular(4),
                 backDrawRodData: BackgroundBarChartRodData(
                   show: true,
@@ -64,8 +63,7 @@ class PokemonStatsChart extends StatelessWidget {
                   setIndex: (newIndex) => count = newIndex,
                   index: count,
                   limit: PokemonStats.values.length,
-                  color: (index) => PokemonStatsToColor.getColor(
-                      PokemonStats.values[index], Colors.black),
+                  color: (index) => PokemonStats.values[index].color,
                 ),
               ),
             ),
@@ -77,19 +75,17 @@ class PokemonStatsChart extends StatelessWidget {
               sideTitles: SideTitles(
                 showTitles: true,
                 getTitlesWidget: (value, meta) => getAxiTitles(
-                  value: value,
-                  titles: PokemonStats.values
-                      .map((e) => PokemonStatsNamed(e).name)
-                      .toList(),
-                  meta: meta,
-                  angle: angle,
-                  offset: offsetBottom,
-                  setIndex: (newIndex) => count = newIndex,
-                  index: count,
-                  limit: PokemonStats.values.length,
-                  color: (index) => PokemonStatsToColor.getColor(
-                      PokemonStats.values[index], Colors.black),
-                ),
+                    value: value,
+                    titles: PokemonStats.values
+                        .map((e) => PokemonStatsUtils(e).name)
+                        .toList(),
+                    meta: meta,
+                    angle: angle,
+                    offset: offsetBottom,
+                    setIndex: (newIndex) => count = newIndex,
+                    index: count,
+                    limit: PokemonStats.values.length,
+                    color: (index) => PokemonStats.values[index].color),
               ),
             ),
           ),

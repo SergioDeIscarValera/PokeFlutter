@@ -1,5 +1,4 @@
 import 'package:PokeFlutter/pokemon/models/pokemon_dto.dart';
-import 'package:PokeFlutter/pokemon/services/pokemon_repository.dart';
 import 'package:PokeFlutter/teams/models/team_dto.dart';
 import 'package:PokeFlutter/teams/models/team_notification.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -80,7 +79,10 @@ class TeamsFirebase {
             {
               "UUID": uuid,
               "name": team.name,
-              "pokemons": team.pokemons!.map((e) => e.id).toList(),
+              "pokemons": team.pokemons!.entries.map((entry) => {
+                    "id": entry.key.id,
+                    "moves": entry.value,
+                  }),
               "invited": team.users
             }
           ])
@@ -94,7 +96,10 @@ class TeamsFirebase {
             {
               "UUID": uuid,
               "name": team.name,
-              "pokemons": team.pokemons!.map((e) => e.id).toList(),
+              "pokemons": team.pokemons!.entries.map((entry) => {
+                    "id": entry.key.id,
+                    "moves": entry.value,
+                  }),
               "invited": team.users
             }
           ])
@@ -103,34 +108,13 @@ class TeamsFirebase {
     }
   }
 
-  /*Future<int> _getLastId({required String email}) async {
-    return await FirebaseFirestore.instance
-        .collection("teams")
-        .doc(email)
-        .get()
-        .then((value) {
-      if (!value.exists) return 0;
-      final teamsOwner = value.data()?["owner"] as List<dynamic>;
-      return teamsOwner.last["id"] ?? 0;
-    });
-  }*/
-
   Future<void> deleteTeam({required String email, required String uuid}) async {
     var allTeams = await getOwnTeams(email: email);
     var removeTeam = allTeams.firstWhere((element) => element.UUID == uuid);
     await _removeAccepts(
         users: removeTeam.users!, emailSender: email, uuid: uuid);
     allTeams.remove(removeTeam);
-    await FirebaseFirestore.instance.collection("teams").doc(email).update({
-      "owner": allTeams
-          .map((e) => {
-                "UUID": e.UUID,
-                "name": e.name,
-                "pokemons": e.pokemons!.map((e) => e.id).toList(),
-                "invited": e.users,
-              })
-          .toList(),
-    });
+    await _updateTeams(email: email, teams: allTeams);
   }
 
   Future<void> _removeAccepts(
@@ -458,23 +442,10 @@ class TeamsFirebase {
     // Añadir una nueva entrada al array invited dentro del arrayowner donde el UUID sea uuidTeam
     var allTeams = await getOwnTeams(email: emailOwner);
     allTeams
-        .where((element) => element.UUID == uuidTeam)
-        .first
+        .firstWhere((element) => element.UUID == uuidTeam)
         .users
         ?.addAll({emailInviter: permission});
-    await FirebaseFirestore.instance
-        .collection("teams")
-        .doc(emailOwner)
-        .update({
-      "owner": allTeams
-          .map((e) => {
-                "UUID": e.UUID,
-                "name": e.name,
-                "pokemons": e.pokemons!.map((e) => e.id).toList(),
-                "invited": e.users,
-              })
-          .toList(),
-    });
+    await _updateTeams(email: emailOwner, teams: allTeams);
   }
 
   //#endregion
@@ -492,20 +463,10 @@ class TeamsFirebase {
   }) async {
     var allTeams = await getOwnTeams(email: email);
     allTeams
-        .where((element) => element.UUID == uuidTeam)
-        .first
-        .pokemons
-        ?.add(pokemon);
-    await FirebaseFirestore.instance.collection("teams").doc(email).update({
-      "owner": allTeams
-          .map((e) => {
-                "UUID": e.UUID,
-                "name": e.name,
-                "pokemons": e.pokemons!.map((e) => e.id).toList(),
-                "invited": e.users,
-              })
-          .toList(),
-    });
+        .firstWhere((element) => element.UUID == uuidTeam)
+        .pokemons!
+        .addAll({pokemon: []});
+    await _updateTeams(email: email, teams: allTeams);
   }
 
   /// Función que elimina un pokemon a un equipo
@@ -519,21 +480,73 @@ class TeamsFirebase {
   }) async {
     var allTeams = await getOwnTeams(email: email);
     allTeams
-        .where((element) => element.UUID == uuidTeam)
-        .first
-        .pokemons
-        ?.removeWhere((element) => element.id == pokemon.id);
-    await FirebaseFirestore.instance.collection("teams").doc(email).update({
-      "owner": allTeams
-          .map((e) => {
-                "UUID": e.UUID,
-                "name": e.name,
-                "pokemons": e.pokemons!.map((e) => e.id).toList(),
-                "invited": e.users,
-              })
-          .toList(),
-    });
+        .firstWhere((element) => element.UUID == uuidTeam)
+        .pokemons!
+        .removeWhere((key, value) => key == pokemon);
+    await _updateTeams(email: email, teams: allTeams);
   }
 
   //#endregion
+
+  //#region Moves
+
+  /// Función que añade un movimiento a un pokemon de un equipo
+  /// @param email Email del usuario propietario del equipo
+  /// @param uuidTeam UUID del equipo
+  /// @param pokemonId Id del pokemon que se va actualizar
+  /// @param move Movimiento que se va a añadir
+  Future<void> addMove(
+      {required String email,
+      required String uuidTeam,
+      required PokemonDto pokemon,
+      required String move}) async {
+    var allTeams = await getOwnTeams(email: email);
+    allTeams
+        .firstWhere((element) => element.UUID == uuidTeam)
+        .pokemons![pokemon]!
+        .add(move);
+    await _updateTeams(email: email, teams: allTeams);
+  }
+
+  /// Función que elimina un movimiento a un pokemon de un equipo
+  /// @param email Email del usuario propietario del equipo
+  /// @param uuidTeam UUID del equipo
+  /// @param pokemonId Id del pokemon que se va actualizar
+  /// @param move Movimiento que se va a eliminar
+  Future<void> removeMove({
+    required String email,
+    required String uuidTeam,
+    required PokemonDto pokemon,
+    required String move,
+  }) async {
+    var allTeams = await getOwnTeams(email: email);
+    allTeams
+        .firstWhere((element) => element.UUID == uuidTeam)
+        .pokemons![pokemon]!
+        .remove(move);
+    await _updateTeams(email: email, teams: allTeams);
+  }
+
+  //#endregion
+
+  Future<void> _updateTeams({
+    required String email,
+    required List<TeamDto> teams,
+  }) async {
+    await FirebaseFirestore.instance.collection("teams").doc(email).update({
+      "owner": teams
+          .map(
+            (e) => {
+              "UUID": e.UUID,
+              "name": e.name,
+              "pokemons": e.pokemons!.entries.map((e) => {
+                    "id": e.key.id,
+                    "moves": e.value,
+                  }),
+              "invited": e.users,
+            },
+          )
+          .toList(),
+    });
+  }
 }

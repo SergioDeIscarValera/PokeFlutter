@@ -1,7 +1,7 @@
 import 'package:PokeFlutter/auth/structure/controllers/auth_controller.dart';
 import 'package:PokeFlutter/pokemon/structure/controllers/user_favorites_controller.dart';
 import 'package:PokeFlutter/pokemon/widgets/grid_of_pokemons.dart';
-import 'package:PokeFlutter/pokemon/widgets/my_app_bar.dart';
+import 'package:PokeFlutter/widgets/my_app_bar.dart';
 import 'package:PokeFlutter/widgets/user_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

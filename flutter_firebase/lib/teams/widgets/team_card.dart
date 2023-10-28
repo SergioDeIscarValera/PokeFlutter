@@ -72,7 +72,7 @@ class TeamCard extends StatelessWidget {
                                   backgroundColor: Colors.grey[800],
                                   radius: _avatarRadius,
                                   backgroundImage: Image.network(
-                                    team.pokemons![i].image!,
+                                    team.pokemons!.keys.toList()[i].image!,
                                   ).image,
                                 ),
                               ),
@@ -89,7 +89,7 @@ class TeamCard extends StatelessWidget {
                               backgroundColor: Colors.grey[800],
                               radius: _avatarRadius,
                               backgroundImage: Image.network(
-                                team.pokemons![i].image!,
+                                team.pokemons!.keys.toList()[i].image!,
                               ).image,
                             ),
                           ),
@@ -170,10 +170,10 @@ class TeamCard extends StatelessWidget {
       showDialog(
         context: context,
         builder: (context) => Obx(() {
-          final _formKey = GlobalKey<FormState>();
+          final formKey = GlobalKey<FormState>();
           final FormValidator formValidator = FormValidator();
           return Form(
-            key: _formKey,
+            key: formKey,
             child: AlertDialog(
               title: const Text("Share Team"),
               shape: RoundedRectangleBorder(
@@ -232,7 +232,7 @@ class TeamCard extends StatelessWidget {
                   message: "Share team",
                   child: IconButton(
                     onPressed: () {
-                      if (_formKey.currentState!.validate()) {
+                      if (formKey.currentState!.validate()) {
                         teamsPreviewController.shareTeam(
                           teamUuid: uuid,
                           teamName: name,

@@ -5,10 +5,9 @@ import 'package:PokeFlutter/pokemon/models/pokemon_stats.dart';
 import 'package:PokeFlutter/pokemon/models/pokemon_type.dart';
 import 'package:PokeFlutter/pokemon/structure/controllers/pokemon_favorites_statistics_controller.dart';
 import 'package:PokeFlutter/pokemon/structure/controllers/user_favorites_controller.dart';
-import 'package:PokeFlutter/pokemon/utils/pokemon_generation_utils.dart';
-import 'package:PokeFlutter/pokemon/utils/pokemon_type_to_color.dart';
+import 'package:PokeFlutter/pokemon/utils/pokemon_generation_funtions.dart';
 import 'package:PokeFlutter/pokemon/widgets/barchart_axieTitle.dart';
-import 'package:PokeFlutter/pokemon/widgets/my_app_bar.dart';
+import 'package:PokeFlutter/widgets/my_app_bar.dart';
 import 'package:PokeFlutter/pokemon/widgets/pokemon_stats_chart.dart';
 import 'package:PokeFlutter/widgets/user_drawer.dart';
 import 'package:collection/collection.dart';
@@ -183,8 +182,8 @@ class RadarChartPokemon extends StatelessWidget {
 
     final List<RadarDataSet> radarDataSet = pokemons.map((e) {
       return RadarDataSet(
-        fillColor: PokemonTypeToColor.getColor(e.type!, Colors.white)
-            .withOpacity(e.id == pokemonSelected?.id ? 1 : 0.15),
+        fillColor:
+            e.type!.color.withOpacity(e.id == pokemonSelected?.id ? 1 : 0.15),
         dataEntries: [
           RadarEntry(value: e.stats![PokemonStats.hp]!.toDouble()),
           RadarEntry(value: e.stats![PokemonStats.attack]!.toDouble()),
@@ -193,8 +192,7 @@ class RadarChartPokemon extends StatelessWidget {
           RadarEntry(value: e.stats![PokemonStats.specialDefense]!.toDouble()),
           RadarEntry(value: e.stats![PokemonStats.speed]!.toDouble()),
         ],
-        borderColor:
-            PokemonTypeToColor.getColor(e.type!, Colors.white).withOpacity(0.5),
+        borderColor: e.type!.color.withOpacity(0.5),
         borderWidth: 2,
         entryRadius: 5,
       );
@@ -208,7 +206,7 @@ class RadarChartPokemon extends StatelessWidget {
         RadarChartData(
           dataSets: radarDataSet,
           getTitle: (index, angle) => RadarChartTitle(
-              text: PokemonStatsNamed(PokemonStats.values[index]).name),
+              text: PokemonStatsUtils(PokemonStats.values[index]).name),
           titleTextStyle: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -260,7 +258,7 @@ class BarCharPokemon extends StatelessWidget {
           BarChartRodData(
             toY: e.value.length.toDouble(),
             width: 20,
-            gradient: PokemonGenerationsUtils.getGradient(e.key, Colors.white),
+            gradient: e.key.gradient,
             borderRadius: BorderRadius.circular(4),
             backDrawRodData: BackgroundBarChartRodData(
               show: true,
@@ -318,9 +316,8 @@ class BarCharPokemon extends StatelessWidget {
                             PokemonStatsChart.count = newIndex,
                         index: PokemonStatsChart.count,
                         limit: entries.length,
-                        color: (value) => PokemonGenerationsUtils.getGradient(
-                                PokemonGenerations.values[value], Colors.black)
-                            .colors[0],
+                        color: (value) =>
+                            PokemonGenerations.values[value].gradient.colors[0],
                       ),
                     ),
                   ),
@@ -339,9 +336,8 @@ class BarCharPokemon extends StatelessWidget {
                             PokemonStatsChart.count = newIndex,
                         index: PokemonStatsChart.count,
                         limit: entries.length,
-                        color: (value) => PokemonGenerationsUtils.getGradient(
-                                PokemonGenerations.values[value], Colors.black)
-                            .colors[0],
+                        color: (value) =>
+                            PokemonGenerations.values[value].gradient.colors[0],
                       ),
                     ),
                   ),
@@ -439,9 +435,9 @@ class PieChartPokemon extends StatelessWidget {
       final radius = isTouched ? 80.0 : 70.0;
       return PieChartSectionData(
         value: e.value.length.toDouble(),
-        color: PokemonTypeToColor.getColor(e.key, Colors.white),
+        color: e.key.color,
         //title: "${(e.value.length * 100 / pokemonsCount).toStringAsFixed(1)}%",
-        title: PokemonTypeNamed(e.key).name,
+        title: PokemonTypeUtils(e.key).name,
         radius: radius,
         titleStyle: TextStyle(
           fontSize: fontSize,
@@ -455,7 +451,7 @@ class PieChartPokemon extends StatelessWidget {
             color: Colors.grey[200],
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: PokemonTypeToColor.getColor(e.key, Colors.black),
+              color: e.key.color,
               width: 2,
             ),
           ),
@@ -465,7 +461,7 @@ class PieChartPokemon extends StatelessWidget {
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.bold,
-              color: PokemonTypeToColor.getColor(e.key, Colors.black),
+              color: e.key.color,
             ),
           ),
         ),

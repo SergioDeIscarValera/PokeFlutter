@@ -6,7 +6,7 @@ import 'package:PokeFlutter/pokemon/models/pokemon_full_info.dart';
 import 'package:PokeFlutter/pokemon/models/pokemon_generations.dart';
 import 'package:PokeFlutter/pokemon/models/pokemon_stats.dart';
 import 'package:PokeFlutter/pokemon/services/pokemon_api_repository.dart';
-import 'package:PokeFlutter/pokemon/utils/pokemon_generation_utils.dart';
+import 'package:PokeFlutter/pokemon/utils/pokemon_generation_funtions.dart';
 import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -70,7 +70,23 @@ class PokemonRepository {
       Response bodyResponse = await PokemonApiRepository()
           .getGeneration(name: (gen.index + 1).toString());
       final body = bodyResponse.body;
-      return PokemonGenerationsUtils.fromJson(jsonDecode(body));
+      return PokemonGenerationsFuntions.fromJson(jsonDecode(body));
+    } catch (e) {
+      return Future.error(e);
+    }
+  }
+
+  Future<List<String>> getMovesById({required int id}) async {
+    try {
+      Response bodyResponse =
+          await PokemonApiRepository().getPokemon(name: id.toString());
+      final body = bodyResponse.body;
+      final json = jsonDecode(body);
+      final List<String> moves = [];
+      for (var move in json["moves"]) {
+        moves.add(move["move"]["name"]);
+      }
+      return moves;
     } catch (e) {
       return Future.error(e);
     }
@@ -244,7 +260,7 @@ class PokemonRepository {
 
   Future<void> _generationsWriteCsv(String generationsNameFilePath) async {
     final List<String> csvData = _generationsNames.entries
-        .map((map) => PokemonGenerationsUtils.toCsvRow(map.key, map.value))
+        .map((map) => PokemonGenerationsFuntions.toCsvRow(map.key, map.value))
         .toList();
     await File(generationsNameFilePath).writeAsString(csvData.join("|"));
   }
@@ -255,7 +271,7 @@ class PokemonRepository {
     // Key: generation, Value: names
     csvData
         .map((tupla) => {
-              PokemonGenerationsUtils.convert(tupla.split(";")[0]):
+              PokemonGenerationsFuntions.convert(tupla.split(";")[0]):
                   tupla.split(";")[1].split(",")
             })
         .forEach((mapedValue) => _generationsNames.addAll(mapedValue));

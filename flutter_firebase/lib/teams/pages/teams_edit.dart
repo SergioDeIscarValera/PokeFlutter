@@ -2,11 +2,11 @@ import 'package:PokeFlutter/auth/structure/controllers/auth_controller.dart';
 import 'package:PokeFlutter/pokemon/models/pokemon_dto.dart';
 import 'package:PokeFlutter/pokemon/structure/controllers/pokemon_controller.dart';
 import 'package:PokeFlutter/pokemon/widgets/grid_of_pokemons.dart';
-import 'package:PokeFlutter/pokemon/widgets/my_app_bar.dart';
+import 'package:PokeFlutter/widgets/my_app_bar.dart';
 import 'package:PokeFlutter/pokemon/widgets/pokemon_search_bar.dart';
 import 'package:PokeFlutter/teams/models/team_dto.dart';
-import 'package:PokeFlutter/teams/models/team_permissions.dart';
 import 'package:PokeFlutter/teams/structure/controllers/teams_edit_controller.dart';
+import 'package:PokeFlutter/teams/widgets/list_of_moveset.dart';
 import 'package:PokeFlutter/teams/widgets/list_of_users.dart';
 import 'package:PokeFlutter/teams/widgets/newCard_card.dart';
 import 'package:PokeFlutter/widgets/user_drawer.dart';
@@ -29,7 +29,7 @@ class TeamsEdit extends StatelessWidget {
             UUID: "",
             owner: "",
             name: "",
-            pokemons: [],
+            pokemons: {},
             users: {},
           );
     teamsEditController.setListeners(argumentTeam, argumentTeam.owner!);
@@ -71,7 +71,7 @@ class TeamsEdit extends StatelessWidget {
                         argumentTeam.owner ?? "",
                         style: TextStyle(
                           fontSize: 14,
-                          color: Colors.grey[600],
+                          color: Colors.grey[700],
                         ),
                       ),
                       const SizedBox(height: 25),
@@ -80,7 +80,8 @@ class TeamsEdit extends StatelessWidget {
                           children: [
                             Obx(
                               () => GridOfPokemons(
-                                pokemonList: teamsEditController.team,
+                                pokemonList:
+                                    teamsEditController.team.keys.toList().obs,
                                 mainAxisSpacing: 15,
                                 crossAxisSpacing: 15,
                                 crossAxisCount: 2,
@@ -122,7 +123,7 @@ class TeamsEdit extends StatelessWidget {
                                         context,
                                         argumentTeam.owner!,
                                         argumentTeam.UUID!,
-                                        teamsEditController.team,
+                                        teamsEditController.team.keys.toList(),
                                       );
                                     })
                                 ],
@@ -136,6 +137,14 @@ class TeamsEdit extends StatelessWidget {
                               )
                             else
                               const SizedBox(),
+                            const SizedBox(height: 10),
+                            ListOfMoveset(
+                              teamsEditController: teamsEditController,
+                              emailOwner: argumentTeam.owner!,
+                              uuidTeam: argumentTeam.UUID!,
+                              emailUser:
+                                  authController.firebaseUser?.email ?? "none",
+                            )
                           ],
                         ),
                       ),
@@ -161,97 +170,124 @@ class TeamsEdit extends StatelessWidget {
   ) =>
       showDialog(
         context: context,
-        builder: (context) => Container(
-          //padding: const EdgeInsets.all(15),
-          margin: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            color: Colors.white,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[600],
-                  borderRadius: const BorderRadius.vertical(
-                    bottom: Radius.circular(16),
+        builder: (context) => Material(
+          type: MaterialType.transparency,
+          child: Container(
+            //padding: const EdgeInsets.all(15),
+            margin: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              color: Colors.white,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey[600],
+                    borderRadius: const BorderRadius.vertical(
+                      bottom: Radius.circular(16),
+                    ),
+                  ),
+                  child: MySearch(
+                    pokemons: pokemonController.pokemonList,
+                    searchController: teamsEditController.searchController,
+                    statsRangeValues: teamsEditController.statsRangeValues,
+                    typeFilter: teamsEditController.typeFilter,
+                    subTypeFilter: teamsEditController.subTypeFilter,
+                    generationFilter: teamsEditController.generationFilter,
+                    moreFilterIsOpen: teamsEditController.moreFilterIsOpen,
+                    changeMoreFilterIsOpen:
+                        teamsEditController.changeMoreFilterIsOpen,
+                    resetStatsRangeValues:
+                        teamsEditController.resetStatsRangeValues,
                   ),
                 ),
-                child: MySearch(
-                  pokemons: pokemonController.pokemonList,
-                  searchController: teamsEditController.searchController,
-                  statsRangeValues: teamsEditController.statsRangeValues,
-                  typeFilter: teamsEditController.typeFilter,
-                  subTypeFilter: teamsEditController.subTypeFilter,
-                  generationFilter: teamsEditController.generationFilter,
-                  moreFilterIsOpen: teamsEditController.moreFilterIsOpen,
-                  changeMoreFilterIsOpen:
-                      teamsEditController.changeMoreFilterIsOpen,
-                  resetStatsRangeValues:
-                      teamsEditController.resetStatsRangeValues,
-                ),
-              ),
-              const SizedBox(height: 32),
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Column(
-                    children: [
-                      GridOfPokemons(
-                        pokemonList: pokemonController.pokemonList,
-                        mainAxisSpacing: 15,
-                        crossAxisSpacing: 15,
-                        crossAxisCount: 2,
-                        icon: Icons.add,
-                        iconSecondary: Icons.add,
-                        onCardTap: ({required pokemon}) {
-                          if (team.contains(pokemon)) {
-                            Get.snackbar(
-                                "Error", "This pokemon is already in the team");
-                            return;
-                          }
-                          teamsEditController.addPokemon(
-                            email,
-                            uuidTeam,
-                            pokemon,
-                          );
-                          Get.back();
-                        },
-                        checkPokemon: (pokemon) {
-                          return team.contains(pokemon);
-                        },
-                      ),
-                      const SizedBox(height: 30),
-                      GestureDetector(
-                        onTap: () {
-                          Get.back();
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 10,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                            color: Colors.grey[600],
-                          ),
-                          child: const Text(
-                            "Cancel",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              decoration: TextDecoration.none,
+                const SizedBox(height: 32),
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Column(
+                      children: [
+                        GridOfPokemons(
+                          pokemonList: pokemonController.pokemonList,
+                          mainAxisSpacing: 15,
+                          crossAxisSpacing: 15,
+                          crossAxisCount: 2,
+                          icon: Icons.add,
+                          iconSecondary: Icons.add,
+                          onCardTap: ({required pokemon}) {
+                            if (team.contains(pokemon)) {
+                              Get.snackbar("Error",
+                                  "This pokemon is already in the team");
+                              return;
+                            }
+                            Get.back();
+                            teamsEditController.addPokemon(
+                              email,
+                              uuidTeam,
+                              pokemon,
+                            );
+                          },
+                          checkPokemon: (pokemon) {
+                            return team.contains(pokemon);
+                          },
+                        ),
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                pokemonController.getPreviousPokemonList();
+                              },
+                              icon: const Icon(Icons.arrow_back_ios),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                pokemonController.resetPokemonList();
+                              },
+                              icon: const Icon(Icons.restart_alt),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                pokemonController.getNextPokemonList();
+                              },
+                              icon: const Icon(Icons.arrow_forward_ios),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 15),
+                        GestureDetector(
+                          onTap: () {
+                            Get.back();
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 10,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16),
+                              color: Colors.grey[600],
+                            ),
+                            child: const Text(
+                              "Cancel",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.none,
+                              ),
                             ),
                           ),
-                        ),
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       );

@@ -2,7 +2,7 @@ import 'package:PokeFlutter/pokemon/models/pokemon_generations.dart';
 import 'package:PokeFlutter/pokemon/models/pokemon_stats.dart';
 import 'package:PokeFlutter/pokemon/models/pokemon_type.dart';
 import 'package:PokeFlutter/pokemon/services/pokemon_repository.dart';
-import 'package:PokeFlutter/pokemon/utils/pokemon_generation_utils.dart';
+import 'package:PokeFlutter/pokemon/utils/pokemon_generation_funtions.dart';
 
 class PokemonDto {
   int? id;
@@ -13,8 +13,14 @@ class PokemonDto {
   PokemonType? subType;
   Map<PokemonStats, int>? stats;
 
-  PokemonDto(
-      {this.id, this.name, this.image, this.type, this.subType, this.stats});
+  PokemonDto({
+    this.id,
+    this.name,
+    this.image,
+    this.type,
+    this.subType,
+    this.stats,
+  });
 
   PokemonDto.fromJson(Map<String, dynamic> json) {
     id = json["id"];
@@ -39,7 +45,7 @@ class PokemonDto {
   }
 
   String toCsvRow() {
-    return "$name,$id,$image,${type.toString().split(".")[1]},${subType == null ? "null" : subType.toString().split(".")[1]},${stats![PokemonStats.hp]},${stats![PokemonStats.attack]},${stats![PokemonStats.defense]},${stats![PokemonStats.specialAttack]},${stats![PokemonStats.specialDefense]},${stats![PokemonStats.speed]},${PokemonGenerationsNamed(generation!).name}";
+    return "$name,$id,$image,${type.toString().split(".")[1]},${subType == null ? "null" : subType.toString().split(".")[1]},${stats![PokemonStats.hp]},${stats![PokemonStats.attack]},${stats![PokemonStats.defense]},${stats![PokemonStats.specialAttack]},${stats![PokemonStats.specialDefense]},${stats![PokemonStats.speed]},${generation!.name}";
   }
 
   PokemonDto.fromCsvRow(String e) {
@@ -61,6 +67,6 @@ class PokemonDto {
       PokemonStats.specialDefense: int.parse(values.elementAt(9)),
       PokemonStats.speed: int.parse(values.elementAt(10)),
     };
-    generation = PokemonGenerationsUtils.convert(values.elementAt(11));
+    generation = PokemonGenerationsFuntions.convert(values.elementAt(11));
   }
 }

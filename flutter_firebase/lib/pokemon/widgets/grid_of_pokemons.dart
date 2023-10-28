@@ -75,7 +75,7 @@ class GridOfPokemons extends StatelessWidget {
                         "Error", "You must be logged in to add favorites");
                   } else {
                     _userFavoritesController.changeFavorite(
-                      email: email ?? "",
+                      email: email,
                       poke: pokemon,
                     );
                   }

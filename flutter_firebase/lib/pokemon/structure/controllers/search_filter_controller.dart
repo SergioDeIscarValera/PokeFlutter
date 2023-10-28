@@ -63,19 +63,21 @@ class SearchFilterController extends GetxController {
   }
 
   void applyFilters() {
-    pokemonController.filterAllPokemons(
-        filter: PokemonFilter(
-      textFild: searchController.value.text,
-      type: typeFilter.value,
-      subType: subTypeFilter.value,
-      stats: statsRangeValues.value,
-      generation: generationFilter.value,
-    ));
-    _isFiltering.value = searchController.value.text.isNotEmpty ||
+    isFiltering = searchController.value.text.isNotEmpty ||
         typeFilter.value != null ||
         subTypeFilter.value != null ||
         statsRangeValues.values
             .any((element) => element.start != 0 || element.end != 255) ||
         generationFilter.value != null;
+    pokemonController.filterAllPokemons(
+      filter: PokemonFilter(
+        textFild: searchController.value.text,
+        type: typeFilter.value,
+        subType: subTypeFilter.value,
+        stats: statsRangeValues.value,
+        generation: generationFilter.value,
+      ),
+      isFiltering: isFiltering,
+    );
   }
 }

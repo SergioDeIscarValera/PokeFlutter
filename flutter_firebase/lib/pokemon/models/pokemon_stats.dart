@@ -1,6 +1,8 @@
+import 'package:flutter/material.dart';
+
 enum PokemonStats { hp, attack, defense, specialAttack, specialDefense, speed }
 
-extension PokemonStatsNamed on PokemonStats {
+extension PokemonStatsUtils on PokemonStats {
   String get name {
     switch (this) {
       case PokemonStats.hp:
@@ -15,6 +17,23 @@ extension PokemonStatsNamed on PokemonStats {
         return "S-Def";
       case PokemonStats.speed:
         return "Spe";
+    }
+  }
+
+  Color get color {
+    switch (this) {
+      case PokemonStats.hp:
+        return const Color(0xFFA8A878);
+      case PokemonStats.attack:
+        return const Color(0xFFF08030);
+      case PokemonStats.defense:
+        return const Color(0xFF6890F0);
+      case PokemonStats.specialAttack:
+        return const Color(0xFFF8D030);
+      case PokemonStats.specialDefense:
+        return const Color(0xFF78C850);
+      case PokemonStats.speed:
+        return const Color(0xFF98D8D8);
     }
   }
 }

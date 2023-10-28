@@ -4,10 +4,34 @@
             "UUID": "jbxcvbnmjhgfdccxv", // UUID del equipo, cuando se añade se ha de consultar el ultimo id y sumarle 1
             "name": "Equipo primera gen", // Nombre del equipo
             "pokemons": [ // Id de los pokemons del equipo, maximo 6
-                12,
-                23,
-                14,
-                45
+                {
+                    "id": 12,
+                    "moves": [
+                        "placaje",
+                        "pistola agua"
+                    ]
+                },
+                {
+                    "id": 23,
+                    "moves": [
+                        "placaje",
+                        "pistola agua",
+                        "royo solar"
+                    ]
+                },
+                {
+                    "id": 14,
+                    "moves": [
+                        "placaje"
+                    ]
+                },
+                {
+                    "id": 45,
+                    "moves": [
+                        "placaje",
+                        "royo solar"
+                    ]
+                }
             ],
             "invited": [ // Invitaciones enviadas, permisos concedidos
                 {

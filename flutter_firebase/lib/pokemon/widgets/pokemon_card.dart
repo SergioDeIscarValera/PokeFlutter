@@ -1,7 +1,7 @@
 import 'package:PokeFlutter/auth/structure/controllers/auth_controller.dart';
 import 'package:PokeFlutter/pokemon/models/pokemon_dto.dart';
+import 'package:PokeFlutter/pokemon/models/pokemon_type.dart';
 import 'package:PokeFlutter/pokemon/structure/controllers/user_favorites_controller.dart';
-import 'package:PokeFlutter/pokemon/utils/pokemon_type_to_color.dart';
 import 'package:PokeFlutter/pokemon/widgets/pokemon_card_type.dart';
 import 'package:PokeFlutter/routes/app_routes.dart';
 import 'package:PokeFlutter/utils/string_funtions.dart';
@@ -19,7 +19,7 @@ class PokemonCard extends StatelessWidget {
     required this.iconColor,
     required this.iconSecondaryColor,
   }) : super(key: key) {
-    _cardColor = PokemonTypeToColor.getColor(pokemon.type, Colors.white);
+    _cardColor = pokemon.type?.color ?? Colors.white;
   }
   final AuthController _authController = Get.find();
   final UserFavoritesController _userFavoritesController = Get.find();
@@ -106,10 +106,6 @@ class PokemonCard extends StatelessWidget {
             top: 3,
             child: Obx(() {
               var email = _authController.firebaseUser?.email;
-              /*var isFavorite =
-                  _userFavoritesController.isFavorite(poke: pokemon);
-              var iconSelected = isFavorite ? iconSecondary : icon;
-              var color = isFavorite ? Colors.red : Colors.white;*/
               var check = checkPokemon.call(pokemon);
               var iconSelected = check ? iconSecondary : icon;
               var color = check ? iconSecondaryColor : iconColor;

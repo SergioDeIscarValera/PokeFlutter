@@ -29,7 +29,7 @@ class ListOfUsers extends StatelessWidget {
           child: Column(
             children: [
               const Text(
-                "Users/Permissions",
+                "Users/Permissions:",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 32,

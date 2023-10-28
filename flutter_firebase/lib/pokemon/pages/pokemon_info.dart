@@ -1,6 +1,7 @@
+import 'package:PokeFlutter/pokemon/models/pokemon_generations.dart';
+import 'package:PokeFlutter/pokemon/models/pokemon_type.dart';
 import 'package:PokeFlutter/pokemon/structure/controllers/pokemon_info_controller.dart';
-import 'package:PokeFlutter/pokemon/utils/pokemon_generation_utils.dart';
-import 'package:PokeFlutter/pokemon/utils/pokemon_type_to_color.dart';
+import 'package:PokeFlutter/pokemon/utils/pokemon_generation_funtions.dart';
 import 'package:PokeFlutter/pokemon/widgets/pokemon_card_type.dart';
 import 'package:PokeFlutter/pokemon/widgets/pokemon_stats_chart.dart';
 import 'package:PokeFlutter/utils/string_funtions.dart';
@@ -30,10 +31,8 @@ class PokemonInfo extends StatelessWidget {
               return Container(
                 height: height,
                 decoration: BoxDecoration(
-                  color: PokemonTypeToColor.getColor(
-                          pokemonInfoController.pokemonSelected.type,
-                          Colors.white)
-                      .withOpacity(0.6),
+                  color: pokemonInfoController.pokemonSelected.type?.color ??
+                      Colors.white.withOpacity(0.6),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.only(top: 35),
@@ -226,15 +225,13 @@ class PokemonInfoMenuAbout extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
-                  gradient: PokemonGenerationsUtils.getGradient(
-                      pokemonInfoController.pokemonSelected.generations,
-                      Colors.black),
+                  gradient: pokemonInfoController
+                          .pokemonSelected.generations?.gradient ??
+                      LinearGradient(colors: [Colors.white, Colors.white]),
                   border: Border.all(color: Colors.white, width: 2)),
               child: Text(
-                PokemonGenerationsUtils.convert(pokemonInfoController
-                        .pokemonSelected.generations
-                        .toString())
-                    .name,
+                pokemonInfoController.pokemonSelected.generations?.name ??
+                    "no info",
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 18,
@@ -268,9 +265,8 @@ class PokemonInfoMenu extends StatelessWidget {
                   text: "About",
                   borderColor: pokemonInfoController.flagMenu
                       ? Colors.transparent
-                      : PokemonTypeToColor.getColor(
-                          pokemonInfoController.pokemonSelected.type,
-                          Colors.white),
+                      : pokemonInfoController.pokemonSelected.type?.color ??
+                          Colors.white,
                   textColor: pokemonInfoController.flagMenu
                       ? Colors.grey
                       : Colors.black,
@@ -287,9 +283,8 @@ class PokemonInfoMenu extends StatelessWidget {
                 child: PokemonInfoMenuItem(
                   text: "Stats",
                   borderColor: pokemonInfoController.flagMenu
-                      ? PokemonTypeToColor.getColor(
-                          pokemonInfoController.pokemonSelected.type,
-                          Colors.white)
+                      ? pokemonInfoController.pokemonSelected.type?.color ??
+                          Colors.white
                       : Colors.transparent,
                   textColor: pokemonInfoController.flagMenu
                       ? Colors.black

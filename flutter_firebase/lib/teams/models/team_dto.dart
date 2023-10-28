@@ -12,7 +12,7 @@ class TeamDto {
   String? name;
 
   // list of pokemons
-  List<PokemonDto>? pokemons;
+  Map<PokemonDto, List<String>>? pokemons;
 
   // list of emails with their permission (true = read/write, false = read)
   Map<String, bool>? users;
@@ -29,9 +29,12 @@ class TeamDto {
     UUID = json['UUID'].toString();
     owner = email;
     name = json['name'];
-    pokemons = (json['pokemons'] as List<dynamic>)
-        .map((id) => PokemonRepository().getPokemonFromCacheById(id: id))
-        .toList();
+    pokemons = {
+      for (var e in json['pokemons'])
+        PokemonRepository().getPokemonFromCacheById(id: e['id']):
+            //Moves to list of string
+            List<String>.from(e['moves'])
+    };
     users = Map<String, bool>.from(json['invited']);
   }
 }

@@ -1,7 +1,6 @@
 import 'package:PokeFlutter/pokemon/models/pokemon_dto.dart';
 import 'package:PokeFlutter/pokemon/models/pokemon_filter_class.dart';
 import 'package:PokeFlutter/pokemon/services/pokemon_repository.dart';
-import 'package:PokeFlutter/teams/services/teams_firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -13,6 +12,10 @@ class PokemonController extends GetxController {
 
   int pagination = 10;
   int _offset = 0;
+
+  //SearchFilterController searchFilterController = Get.find();
+  bool _isFiltering = false;
+  PokemonFilter? _filter;
 
   @override
   void onReady() {
@@ -27,8 +30,17 @@ class PokemonController extends GetxController {
 
   void getPokemonList({required int limit, required int offset}) {
     pokemonList.value = []; // Para que se muestre el loading
-    pokemonList.value = PokemonRepository()
-        .getPokemonListFromCache(limit: limit, offset: offset);
+    if (!_isFiltering) {
+      pokemonList.value = PokemonRepository()
+          .getPokemonListFromCache(limit: limit, offset: offset);
+    } else {
+      var value = PokemonRepository().getAllPokemonsFilter(_filter!);
+      if (value.length < offset) {
+        _offset -= pagination;
+      }
+      pokemonList.value = value.sublist(_offset,
+          (_offset + limit) > value.length ? value.length : (_offset + limit));
+    }
   }
 
   void getNextPokemonList() {
@@ -71,8 +83,11 @@ class PokemonController extends GetxController {
     this.pagination = pagination;
   }
 
-  Future<void> filterAllPokemons({required PokemonFilter filter}) async {
+  Future<void> filterAllPokemons(
+      {required PokemonFilter filter, required bool isFiltering}) async {
     var value = PokemonRepository().getAllPokemonsFilter(filter);
     pokemonList.value = value.sublist(0, value.length > 10 ? 10 : value.length);
+    _isFiltering = isFiltering;
+    _filter = filter;
   }
 }

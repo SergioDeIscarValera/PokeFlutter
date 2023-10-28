@@ -3,7 +3,7 @@ import 'package:PokeFlutter/pokemon/structure/controllers/pokemon_controller.dar
 import 'package:PokeFlutter/pokemon/structure/controllers/search_filter_controller.dart';
 import 'package:PokeFlutter/pokemon/structure/controllers/user_favorites_controller.dart';
 import 'package:PokeFlutter/pokemon/widgets/grid_of_pokemons.dart';
-import 'package:PokeFlutter/pokemon/widgets/my_app_bar.dart';
+import 'package:PokeFlutter/widgets/my_app_bar.dart';
 import 'package:PokeFlutter/pokemon/widgets/pokemon_search_bar.dart';
 import 'package:PokeFlutter/widgets/user_drawer.dart';
 import 'package:PokeFlutter/routes/app_routes.dart';
@@ -78,7 +78,20 @@ class PokemonHome extends StatelessWidget {
                   Builder(
                     builder: (context) => MyAppBar(
                       rightFuntion: () {
-                        authController.signOut();
+                        //Dialogo de confirmación
+                        Get.defaultDialog(
+                          title: "Sign Out",
+                          middleText: "Are you sure?",
+                          textConfirm: "Yes",
+                          textCancel: "No",
+                          confirmTextColor: Colors.white,
+                          onConfirm: () {
+                            authController.signOut();
+                          },
+                          onCancel: () {
+                            Get.back();
+                          },
+                        );
                       },
                       userName: authController.firebaseUser?.displayName ??
                           "Anonymous",
@@ -109,32 +122,33 @@ class PokemonHome extends StatelessWidget {
                         crossAxisCount: 2,
                       ),
                       const SizedBox(height: 15),
-                      Obx(() {
-                        if (!searchFilterController.isFiltering) {
-                          return Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                IconButton(
-                                  onPressed: () {
-                                    pokemonController.getPreviousPokemonList();
-                                    _scrollController.jumpTo(_scrollController
-                                        .position.minScrollExtent);
-                                  },
-                                  icon: const Icon(Icons.arrow_back_ios),
-                                ),
-                                IconButton(
-                                  onPressed: () {
-                                    pokemonController.getNextPokemonList();
-                                    _scrollController.jumpTo(_scrollController
-                                        .position.minScrollExtent);
-                                  },
-                                  icon: const Icon(Icons.arrow_forward_ios),
-                                ),
-                              ]);
-                        } else {
-                          return const SizedBox();
-                        }
-                      }),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              pokemonController.getPreviousPokemonList();
+                              _scrollController.jumpTo(
+                                  _scrollController.position.minScrollExtent);
+                            },
+                            icon: const Icon(Icons.arrow_back_ios),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              pokemonController.resetPokemonList();
+                            },
+                            icon: const Icon(Icons.restart_alt),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              pokemonController.getNextPokemonList();
+                              _scrollController.jumpTo(
+                                  _scrollController.position.minScrollExtent);
+                            },
+                            icon: const Icon(Icons.arrow_forward_ios),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
